@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AlertService, AuthenticationService } from '../_services/index';
+import { AlertService, AuthenticationService, RoomAuthService } from '../_services/index';
 
 @Component({
     moduleId: module.id,
@@ -17,12 +17,15 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService,
-        private alertService: AlertService) { }
+        private roomAuthService: RoomAuthService,
+        private alertService: AlertService) { 
+
+        }
 
     ngOnInit() {
         // reset login status
         this.authenticationService.logout();
-
+        this.roomAuthService.exitRoom();
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     }

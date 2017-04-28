@@ -4,4 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./auth.guard"));
+__export(require("./room.guard"));
 //# sourceMappingURL=index.js.map

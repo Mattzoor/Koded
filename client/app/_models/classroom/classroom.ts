@@ -1,8 +1,9 @@
-import { User } from "../user";
+import { User } from '../index';
 
 export class Classroom {
     _id: string;
-    namn: string;
+    roomName: string;
     teacherId: string;
     students: User[];
+    pendingReq: User[];
 }

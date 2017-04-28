@@ -5,3 +5,11 @@
 .help-block {
     font-size: 12px;
 }
+
+#users_name_h1{
+    font-size: 33px;
+}
+
+.logoutDiv{
+    vertical-align: middle;
+}

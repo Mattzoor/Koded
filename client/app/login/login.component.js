@@ -13,10 +13,11 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
 var LoginComponent = (function () {
-    function LoginComponent(route, router, authenticationService, alertService) {
+    function LoginComponent(route, router, authenticationService, roomAuthService, alertService) {
         this.route = route;
         this.router = router;
         this.authenticationService = authenticationService;
+        this.roomAuthService = roomAuthService;
         this.alertService = alertService;
         this.model = {};
         this.loading = false;
@@ -24,6 +25,7 @@ var LoginComponent = (function () {
     LoginComponent.prototype.ngOnInit = function () {
         // reset login status
         this.authenticationService.logout();
+        this.roomAuthService.exitRoom();
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     };
@@ -48,6 +50,7 @@ LoginComponent = __decorate([
     __metadata("design:paramtypes", [router_1.ActivatedRoute,
         router_1.Router,
         index_1.AuthenticationService,
+        index_1.RoomAuthService,
         index_1.AlertService])
 ], LoginComponent);
 exports.LoginComponent = LoginComponent;

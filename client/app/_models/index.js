@@ -3,5 +3,6 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./createClassroom.component"));
+__export(require("./user/user"));
+__export(require("./classroom/classroom"));
 //# sourceMappingURL=index.js.map

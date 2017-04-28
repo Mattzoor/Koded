@@ -12,36 +12,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
-var CreateClassroomComponent = (function () {
-    function CreateClassroomComponent(router, classroomService, alertService) {
+var RoomComponent = (function () {
+    function RoomComponent(router, classroomService, alertService) {
         this.router = router;
         this.classroomService = classroomService;
         this.alertService = alertService;
         this.model = {};
         this.loading = false;
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
     }
-    CreateClassroomComponent.prototype.createClassroom = function () {
+    RoomComponent.prototype.ngOnInit = function () {
+        if (this.currentUser.teacher) {
+            this.getReq();
+        }
+    };
+    RoomComponent.prototype.getReq = function () {
         var _this = this;
-        this.loading = true;
-        this.classroomService.create(this.model)
-            .subscribe(function (data) {
-            _this.alertService.success('Classroom created successful', true);
-            _this.router.navigate(['/']);
-        }, function (error) {
-            _this.alertService.error(error._body);
-            _this.loading = false;
+        this.classroomService.getReq(this.currentRoom._id).subscribe(function (user) {
+            _this.pendingReq = user;
+            console.log(user);
         });
     };
-    return CreateClassroomComponent;
+    return RoomComponent;
 }());
-CreateClassroomComponent = __decorate([
+RoomComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        templateUrl: 'createClassroom.component.html'
+        templateUrl: 'room.component.html'
     }),
     __metadata("design:paramtypes", [router_1.Router,
         index_1.ClassroomService,
         index_1.AlertService])
-], CreateClassroomComponent);
-exports.CreateClassroomComponent = CreateClassroomComponent;
-//# sourceMappingURL=createClassroom.component.js.map
+], RoomComponent);
+exports.RoomComponent = RoomComponent;
+//# sourceMappingURL=room.component.js.map

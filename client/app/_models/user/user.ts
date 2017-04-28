@@ -5,4 +5,5 @@
     firstName: string;
     lastName: string;
     teacher: boolean;
+    classroomIds: string[];
 }

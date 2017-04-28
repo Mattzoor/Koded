@@ -21,7 +21,7 @@ module.exports = service;
 function authenticate(username, password) {
     var deferred = Q.defer();
 
-    db.users.findOne({ username: username }, function (err, user) {
+    db.users.findOne({ username : { '$regex': username, $options:'i'}}, function (err, user) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (user && bcrypt.compareSync(password, user.hash)) {
@@ -83,7 +83,7 @@ function create(userParam) {
 
     // validation
     db.users.findOne(
-        { username: userParam.username },
+        { username : { '$regex': userParam.username, $options:'i'}},
         function (err, user) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
@@ -124,7 +124,7 @@ function update(_id, userParam) {
         if (user.username !== userParam.username) {
             // username has changed so check if the new username is already taken
             db.users.findOne(
-                { username: userParam.username },
+                { username : { '$regex': userParam.username, $options:'i'}},
                 function (err, user) {
                     if (err) deferred.reject(err.name + ': ' + err.message);
 

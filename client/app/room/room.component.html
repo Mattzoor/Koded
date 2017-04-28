@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="col-md-6 col-md-offset-3">
+        <h1>{{currentRoom.roomName}}</h1>
+        <p>{{currentUser.firstName}} </p> 
+    </div>
+
+    <!-- Teacher section -->  
+    <div *ngIf="currentUser.teacher">
+        <div class="col-md-6">
+            <p>ASS ASS, ASS AND TITTIES</p>
+        </div>
+        <div class="col-md-6">
+            
+        </div>
+        <div class="col-md-6">
+            <h3>Pending requests:</h3>
+                <ul>
+                    <li *ngFor="let student of pendingReq">
+                        {{firstName}} {{student.lastName}} ({{student.username}})
+                        - <button class="btn btn-success btn-sm" >Accept</button>    
+                        - <a >Decline</a>
+                        </li>
+                </ul>
+        </div>
+    </div>
+
+    <!-- Student section -->
+    <div *ngIf="!currentUser.teacher">
+        <div class="col-md-6">
+              
+        </div>
+        <div class="col-md-6">
+            
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <p id="exit_link"><a [routerLink]="['/']">Exit Room</a></p>
+</div>

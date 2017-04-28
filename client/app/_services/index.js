@@ -5,6 +5,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./alert.service"));
 __export(require("./authentication.service"));
+__export(require("./roomAuth.service"));
 __export(require("./user.service"));
 __export(require("./classroom.service"));
 //# sourceMappingURL=index.js.map

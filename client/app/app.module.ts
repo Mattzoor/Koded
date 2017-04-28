@@ -8,11 +8,12 @@ import { routing } from './app.routing';
 import { AppConfig } from './app.config';
 
 import { AlertComponent } from './_directives/index';
-import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService, ClassroomService } from './_services/index';
+import { AuthGuard, RoomGuard } from './_guards/index';
+import { AlertService, AuthenticationService, RoomAuthService, UserService, ClassroomService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
+import { RoomComponent } from './room/index';
 
 @NgModule({
     imports: [
@@ -26,13 +27,16 @@ import { RegisterComponent } from './register/index';
         AlertComponent,
         HomeComponent,
         LoginComponent,
-        RegisterComponent
+        RegisterComponent,
+        RoomComponent
     ],
     providers: [
         AppConfig,
         AuthGuard,
+        RoomGuard,
         AlertService,
         AuthenticationService,
+        RoomAuthService,
         UserService,
         ClassroomService
     ],
