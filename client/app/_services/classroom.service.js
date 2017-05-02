@@ -26,20 +26,18 @@ var ClassroomService = (function () {
     ClassroomService.prototype.create = function (classroom) {
         return this.http.post(this.config.apiUrl + '/classrooms/create', classroom, this.jwt());
     };
-    /*
-        update(classroom: Classroom) {
-            return this.http.put(this.config.apiUrl + '/classrooms/' + classroom._id, classroom,this.jwt());
-        }
-    */
+    ClassroomService.prototype.update = function (classroom) {
+        return this.http.put(this.config.apiUrl + '/classrooms/' + classroom._id, classroom, this.jwt());
+    };
     ClassroomService.prototype.delete = function (_id) {
         return this.http.delete(this.config.apiUrl + '/classrooms/' + _id, this.jwt());
     };
     //Specific Methods
     ClassroomService.prototype.getByTeacherId = function (teacherId) {
-        return this.http.get(this.config.apiUrl + '/classrooms/' + teacherId, this.jwt()).map(function (response) { return response.json(); });
+        return this.http.get(this.config.apiUrl + '/classrooms/teacher/' + teacherId, this.jwt()).map(function (response) { return response.json(); });
     };
     ClassroomService.prototype.getByStudentId = function (studentId) {
-        return this.http.get(this.config.apiUrl + '/classrooms/' + studentId, this.jwt()).map(function (response) { return response.json(); });
+        return this.http.get(this.config.apiUrl + '/classrooms/student/' + studentId, this.jwt()).map(function (response) { return response.json(); });
     };
     ClassroomService.prototype.sendReq = function (roomName, student) {
         return this.http.put(this.config.apiUrl + '/classrooms/' + roomName, student, this.jwt());

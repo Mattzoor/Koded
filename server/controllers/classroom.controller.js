@@ -8,13 +8,12 @@ router.post('/authenticate', authenticate);
 router.post('/create', create);
 router.get('/', getAll);
 router.get('/current', getCurrent);
-//router.put('/:_id', update);
+router.put('/:_id', update);
 router.delete('/:_id', _delete);
 
-router.get('/:teacherId',getByTeacherId);
-router.get('/:studentId',getByStudentId);
+router.get('/teacher/:teacherId',getByTeacherId);
+router.get('/student/:studentId',getByStudentId);
 router.put('/:roomName', sendReq);
-router.get('/pendingReq/:_id', getReq);
 
 module.exports = router;
 
@@ -67,7 +66,7 @@ function getCurrent(req, res) {
             res.status(400).send(err);
         });
 }
-/*
+
 function update(req, res) {
     classroomService.update(req.params._id, req.body)
         .then(function () {
@@ -77,7 +76,7 @@ function update(req, res) {
             res.status(400).send(err);
         });
 }
-*/
+
 function _delete(req, res) {
     classroomService.delete(req.params._id)
         .then(function () {
@@ -123,22 +122,6 @@ function sendReq(req, res){
     classroomService.sendReq(req.params, req.body)
         .then(function () {
             res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
-function getReq(req, res){
-    
-    classroomService.getReq(req.params)
-        .then(function (users) {
-            if (users) {
-                console.log(users);
-                res.send(users);
-            } else {
-                res.sendStatus(404);
-            }
         })
         .catch(function (err) {
             res.status(400).send(err);

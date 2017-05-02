@@ -20,23 +20,34 @@ export class RoomComponent implements OnInit {
     constructor(
         private router: Router,
         private classroomService: ClassroomService,
+        private userService:UserService,
         private alertService: AlertService) { 
              this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
              this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+             this.pendingReq = new Array();
     }
 
     ngOnInit(){
-        if(this.currentUser.teacher){
-            this.getReq();
+        if(this.currentUser.teacher && this.currentRoom.pendingReq != null){
+            this.currentRoom.pendingReq.forEach(user => {
+                this.getReq(user);
+            });
         }
     }
 
-    getReq(){
-        this.classroomService.getReq(this.currentRoom._id).subscribe(
-            user => { this.pendingReq = user; 
-                console.log(user);
+    getReq(user: any){
+        this.userService.getById(user).subscribe(
+            user => { this.pendingReq.push(user); 
             }
         );
     }
+
+    acceptPendingReq(student:any){
+
+    }
+
+    removePendingReq(student:any){
+    }
+
     
 }

@@ -8,6 +8,7 @@ router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.get('/', getAll);
 router.get('/current', getCurrent);
+router.get('/:_id', getById);
 router.put('/:_id', update);
 router.delete('/:_id', _delete);
 
@@ -51,6 +52,20 @@ function getAll(req, res) {
 
 function getCurrent(req, res) {
     userService.getById(req.user.sub)
+        .then(function (user) {
+            if (user) {
+                res.send(user);
+            } else {
+                res.sendStatus(404);
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getById(req, res) {
+    userService.getById(req.params._id)
         .then(function (user) {
             if (user) {
                 res.send(user);

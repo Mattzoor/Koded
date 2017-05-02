@@ -13,26 +13,34 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
 var RoomComponent = (function () {
-    function RoomComponent(router, classroomService, alertService) {
+    function RoomComponent(router, classroomService, userService, alertService) {
         this.router = router;
         this.classroomService = classroomService;
+        this.userService = userService;
         this.alertService = alertService;
         this.model = {};
         this.loading = false;
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+        this.pendingReq = new Array();
     }
     RoomComponent.prototype.ngOnInit = function () {
-        if (this.currentUser.teacher) {
-            this.getReq();
+        var _this = this;
+        if (this.currentUser.teacher && this.currentRoom.pendingReq != null) {
+            this.currentRoom.pendingReq.forEach(function (user) {
+                _this.getReq(user);
+            });
         }
     };
-    RoomComponent.prototype.getReq = function () {
+    RoomComponent.prototype.getReq = function (user) {
         var _this = this;
-        this.classroomService.getReq(this.currentRoom._id).subscribe(function (user) {
-            _this.pendingReq = user;
-            console.log(user);
+        this.userService.getById(user).subscribe(function (user) {
+            _this.pendingReq.push(user);
         });
+    };
+    RoomComponent.prototype.acceptPendingReq = function (student) {
+    };
+    RoomComponent.prototype.removePendingReq = function (student) {
     };
     return RoomComponent;
 }());
@@ -43,6 +51,7 @@ RoomComponent = __decorate([
     }),
     __metadata("design:paramtypes", [router_1.Router,
         index_1.ClassroomService,
+        index_1.UserService,
         index_1.AlertService])
 ], RoomComponent);
 exports.RoomComponent = RoomComponent;

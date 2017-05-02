@@ -16,10 +16,10 @@
             <h3>Pending requests:</h3>
                 <ul>
                     <li *ngFor="let student of pendingReq">
-                        {{firstName}} {{student.lastName}} ({{student.username}})
-                        - <button class="btn btn-success btn-sm" >Accept</button>    
-                        - <a >Decline</a>
-                        </li>
+                        {{student.firstName}} {{student.lastName}} ({{student.username}})
+                        - <button (click)="acceptPendingReq(student)" class="btn btn-success btn-sm" >Accept</button>    
+                        - <a (click)="removePendingReq(student)">Decline</a>
+                    </li>
                 </ul>
         </div>
     </div>

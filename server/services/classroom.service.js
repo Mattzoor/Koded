@@ -6,7 +6,6 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 db.bind('classrooms');
-db.bind('users');
 
 var service = {};
 
@@ -15,7 +14,7 @@ service.authenticate = authenticate;
 service.getAll = getAll;
 service.getById = getById;
 service.create = create;
-//service.update = update;
+service.update = update;
 service.delete = _delete;
 service.getByTeacherId = getByTeacherId;
 service.getByStudentId = getByStudentId;
@@ -34,7 +33,9 @@ function authenticate(_id) {
             deferred.resolve({
                 _id: classroom._id,
                 roomName: classroom.roomName,
-                teacherId: classroom.teacherId
+                teacherId: classroom.teacherId,
+                pendingReq: classroom.pendingReq,
+                pendingStud: classroom.pendingStud
             });
         } else {
             // authentication failed
@@ -53,7 +54,6 @@ function getAll() {
 
         deferred.resolve(classrooms);
     });
-    console.log(deferred.promise);
     return deferred.promise;
 }
 
@@ -104,7 +104,7 @@ function create(classroomParam) {
 
     return deferred.promise;
 }
-/*
+
 function update(_id, classroomParam) {
     var deferred = Q.defer();
     console.log(_id +'      ' + classroomParam);
@@ -151,7 +151,6 @@ function update(_id, classroomParam) {
 
     return deferred.promise;
 }
-*/
 
 function _delete(_id) {
     var deferred = Q.defer();
@@ -228,49 +227,6 @@ function sendReq(roomName, studentParam){
 
                 deferred.resolve();
             });
-    }
-    return deferred.promise;
-}
-
-function getReq(_id){
-    var deferred = Q.defer();
-
-    db.classrooms.findOne({ _id: mongo.helper.toObjectID(_id._id)}, function (err, classroom) {
-        if (err) deferred.reject(err._id + ': ' + err.message);
-        
-        if(classroom){
-            getReqToRoom(classroom);
-        }
-    });
-    function getReqToRoom(classroom) {
-        
-        var pendingReq = [];
-        var pendingStud = [];
-        // fields to update
-        if(classroom.pendingReq != null){                
-            pendingReq = classroom.pendingReq;
-            pendingStud = new Array();
-        }
-        
-        console.log();
-        pendingReq.forEach(function(_id){
-            
-            //pendingStud.push(hej);
-            var hej = {};
-            db.users.findOne({ _id: mongo.helper.toObjectID(_id)},function (err, user) {
-                if (err) deferred.reject(err.username + ': ' + err.message);
-                
-                if (user) {
-                    hej = user;
-                    pendingStud.push(hej);
-                }
-                
-            });
-            pendingStud.push(hej);
-        });
-
-        console.log(pendingStud);
-        deferred.resolve(pendingStud);
     }
     return deferred.promise;
 }
