@@ -23,6 +23,9 @@ var ClassroomService = (function () {
     ClassroomService.prototype.getById = function (_id) {
         return this.http.get(this.config.apiUrl + '/classrooms/' + _id, this.jwt()).map(function (response) { return response.json(); });
     };
+    ClassroomService.prototype.getByName = function (name) {
+        return this.http.get(this.config.apiUrl + '/classrooms/name/' + name, this.jwt()).map(function (response) { return response.json(); });
+    };
     ClassroomService.prototype.create = function (classroom) {
         return this.http.post(this.config.apiUrl + '/classrooms/create', classroom, this.jwt());
     };

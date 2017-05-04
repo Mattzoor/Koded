@@ -12,6 +12,7 @@ router.get('/:_id', getById);
 router.put('/:_id', update);
 router.delete('/:_id', _delete);
 router.get('/rooms/:_id', getClassrooms);
+router.get('/reqs/:_id', getReqs);
 router.put('/exit/:_id', exitClassroom);
 
 router.put('/updateRoom/:_id', updateRoom);
@@ -31,10 +32,18 @@ function exitClassroom(req, res){
 }
 
 function getClassrooms(req, res){
-    //console.log("controller" + req.params._id)
     userService.getClassrooms(req.params._id)
         .then(function (rooms) {
-            //console.log("controller   " + rooms)
+            res.send(rooms);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getReqs(req, res){
+    userService.getReqs(req.params._id)
+        .then(function (rooms) {
             res.send(rooms);
         })
         .catch(function (err) {
@@ -138,6 +147,7 @@ function updateRoom(req, res) {
 }
 
 function addPendReq(req,res){
+    console.log(req.params._id + " " + req.body._id);
      userService.addPendReq(req.params, req.body)
         .then(function () {
             res.sendStatus(200);

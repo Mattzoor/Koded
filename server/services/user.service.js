@@ -17,6 +17,7 @@ service.create = create;
 service.update = update;
 service.delete = _delete;
 service.getClassrooms = getClassrooms;
+service.getReqs = getReqs;
 service.exitClassroom = exitClassroom;
 
 service.updateRoom = updateRoom;
@@ -81,6 +82,21 @@ function getClassrooms(_id){
     
 }
 
+function getReqs(_id){
+    var deferred = Q.defer();
+    // validation
+    db.users.findOne({_id: mongo.helper.toObjectID(_id)}, function (err, user) {
+        if (err) deferred.reject(err.username + ': ' + err.message);
+        if(user){
+            if(user.pendingReq != null){
+                classrooms = user.pendingReq; 
+                deferred.resolve(classrooms);
+            }
+        }
+    });
+    return deferred.promise;
+    
+}
 
 function authenticate(username, password) {
     var deferred = Q.defer();
@@ -317,12 +333,13 @@ function addPendReq(student,classroom){
 
             if(user.pendingReq != null){
                 set.pendingReq = user.pendingReq; 
+                set.pendingReq.push(classroom._id);
             }
 
             if(user.classroomIds != null){
                 set.classroomIds = user.classroomIds;   
             }            
-
+            
             db.users.update(
                 { _id: mongo.helper.toObjectID(user._id) },
                 { $set: set },

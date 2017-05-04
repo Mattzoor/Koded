@@ -17,8 +17,11 @@ export class UserService {
     }
 
     getClassrooms(_id:string){
-        console.log("asd");
         return this.http.get(this.config.apiUrl + '/users/rooms/' + _id,this.jwt()).map((response: Response) => response.json());
+    }
+
+    getReqs(_id:string){
+        return this.http.get(this.config.apiUrl + '/users/reqs/' + _id,this.jwt()).map((response: Response) => response.json());
     }
 
     create(user: User) {
@@ -34,7 +37,6 @@ export class UserService {
     }
 
     exitClassroom(userId: string, room: Classroom){
-        //console.log(userId + "    " + room);
         return this.http.put(this.config.apiUrl + '/users/exit/' + userId, room, this.jwt());
     }
 
@@ -42,6 +44,7 @@ export class UserService {
         return this.http.put(this.config.apiUrl + '/users/updateRoom/' + student._id, classroom, this.jwt());
     }
     addPendReq(student: User, classroom:Classroom){
+        console.log(student._id + " " + classroom._id);
         return this.http.put(this.config.apiUrl + '/users/addPendReq/' + student._id, classroom, this.jwt());
     }
     removePendReq(student: User, classroom:Classroom){

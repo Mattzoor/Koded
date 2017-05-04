@@ -42,7 +42,7 @@ export class RoomComponent implements OnInit {
     getUserToReq(){
         this.pendingReq = new Array();
         this.currentRoom.pendingReq.forEach(user => {
-            this.userService.getById(user._id).subscribe(
+            this.userService.getById(user).subscribe(
                 user => { 
                     this.pendingReq.push(user); 
                 }
@@ -53,7 +53,7 @@ export class RoomComponent implements OnInit {
     getUserToStud(){
         this.students = new Array();
         this.currentRoom.students.forEach(user => {
-            this.userService.getById(user._id).subscribe(
+            this.userService.getById(user).subscribe(
                 user => { 
                     this.students.push(user); 
                 }

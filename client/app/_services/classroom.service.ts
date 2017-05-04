@@ -16,7 +16,11 @@ export class ClassroomService {
     getById(_id: string) {
         return this.http.get(this.config.apiUrl + '/classrooms/' + _id,this.jwt()).map((response: Response) => response.json());
     }
-
+    
+    getByName(name: string) {
+        return this.http.get(this.config.apiUrl + '/classrooms/name/' + name,this.jwt()).map((response: Response) => response.json());
+    }
+    
     create(classroom: Classroom) {
         return this.http.post(this.config.apiUrl + '/classrooms/create', classroom,this.jwt());
     }

@@ -14,6 +14,7 @@ var service = {};
 service.authenticate = authenticate;
 service.getAll = getAll;
 service.getById = getById;
+service.getByName = getByName;
 service.create = create;
 service.update = update;
 service.delete = _delete;
@@ -72,6 +73,21 @@ function getById(_id) {
             deferred.resolve(classroom);
         } else {
             // user not found
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+function getByName(roomName) {
+    var deferred = Q.defer();
+    db.classrooms.findOne({roomName : { '$regex': roomName, $options:'i'}}, function (err, classroom) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+
+        if (classroom) {
+            deferred.resolve(classroom);
+        } else {
             deferred.resolve();
         }
     });

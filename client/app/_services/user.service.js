@@ -24,8 +24,10 @@ var UserService = (function () {
         return this.http.get(this.config.apiUrl + '/users/' + _id, this.jwt()).map(function (response) { return response.json(); });
     };
     UserService.prototype.getClassrooms = function (_id) {
-        console.log("asd");
         return this.http.get(this.config.apiUrl + '/users/rooms/' + _id, this.jwt()).map(function (response) { return response.json(); });
+    };
+    UserService.prototype.getReqs = function (_id) {
+        return this.http.get(this.config.apiUrl + '/users/reqs/' + _id, this.jwt()).map(function (response) { return response.json(); });
     };
     UserService.prototype.create = function (user) {
         return this.http.post(this.config.apiUrl + '/users/register', user, this.jwt());
@@ -37,13 +39,13 @@ var UserService = (function () {
         return this.http.delete(this.config.apiUrl + '/users/' + _id, this.jwt());
     };
     UserService.prototype.exitClassroom = function (userId, room) {
-        //console.log(userId + "    " + room);
         return this.http.put(this.config.apiUrl + '/users/exit/' + userId, room, this.jwt());
     };
     UserService.prototype.updateRooms = function (student, classroom) {
         return this.http.put(this.config.apiUrl + '/users/updateRoom/' + student._id, classroom, this.jwt());
     };
     UserService.prototype.addPendReq = function (student, classroom) {
+        console.log(student._id + " " + classroom._id);
         return this.http.put(this.config.apiUrl + '/users/addPendReq/' + student._id, classroom, this.jwt());
     };
     UserService.prototype.removePendReq = function (student, classroom) {

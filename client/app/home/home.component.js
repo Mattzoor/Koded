@@ -20,10 +20,10 @@ var HomeComponent = (function () {
         this.alertService = alertService;
         this.roomAuthService = roomAuthService;
         this.classrooms = [];
+        this.pendingReq = [];
         this.model = {};
         this.loading = false;
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.roomS = new Array();
     }
     HomeComponent.prototype.ngOnInit = function () {
         this.loadUsersClassrooms();
@@ -67,15 +67,23 @@ var HomeComponent = (function () {
     HomeComponent.prototype.sendReqToClassroom = function () {
         var _this = this;
         this.loading = true;
-        this.classroomService.sendReq(this.model.roomName, this.currentUser).subscribe(function (data) {
+        this.classroomService.sendReq(this.model.roomName, this.currentUser).subscribe(function () {
             _this.loadUsersClassrooms();
-            _this.classrooms.forEach(function (room) {
-                if (room.roomName.localeCompare(_this.model.roomName)) {
-                    _this.userService.addPendReq(_this.currentUser, room);
-                }
+        });
+        this.classroomService.getByName(this.model.roomName).subscribe(function (room) {
+            if (room.roomName == _this.model.roomName) {
+                _this.userService.addPendReq(_this.currentUser, room).subscribe();
+            }
+            _this.loading = false;
+        });
+    };
+    HomeComponent.prototype.removeReq = function (classroom) {
+        var _this = this;
+        this.classroomService.removePendingReq(this.currentUser, classroom).subscribe(function () {
+            _this.userService.removePendReq(_this.currentUser, classroom).subscribe(function () {
+                _this.loadUsersClassrooms();
             });
         });
-        this.loading = false;
     };
     HomeComponent.prototype.deleteClassroom = function (_id) {
         var _this = this;
@@ -96,6 +104,11 @@ var HomeComponent = (function () {
                     _this.getRoom(room);
                 });
             });
+            this.userService.getReqs(this.currentUser._id).subscribe(function (rooms) {
+                rooms.forEach(function (room) {
+                    _this.getReq(room);
+                });
+            });
         }
     };
     HomeComponent.prototype.getRoom = function (cRoom) {
@@ -111,6 +124,21 @@ var HomeComponent = (function () {
             }
             if (j == false) {
                 _this.classrooms.push(realRoom);
+            }
+        });
+    };
+    HomeComponent.prototype.getReq = function (cRoom) {
+        var _this = this;
+        this.classroomService.getById(cRoom).subscribe(function (realRoom) {
+            var j = false;
+            for (var i = 0; i < _this.pendingReq.length; i++) {
+                if (_this.pendingReq[i]._id == realRoom._id) {
+                    j = true;
+                    break;
+                }
+            }
+            if (j == false) {
+                _this.pendingReq.push(realRoom);
             }
         });
     };

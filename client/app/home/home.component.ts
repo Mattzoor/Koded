@@ -2,11 +2,8 @@
 import { Router } from '@angular/router';
 
 import { User, Classroom } from '../_models/index';
-<<<<<<< HEAD
 import { AlertService, ClassroomService, RoomAuthService,UserService } from '../_services/index';
-=======
-import { AlertService, ClassroomService, UserService, RoomAuthService } from '../_services/index';
->>>>>>> origin/master
+
 
 @Component({
     moduleId: module.id,
@@ -16,9 +13,9 @@ import { AlertService, ClassroomService, UserService, RoomAuthService } from '..
 export class HomeComponent implements OnInit {
     currentUser: User;
     classrooms: Classroom[] = [];
+    pendingReq: Classroom[] = [];
     model: any = {};
     loading = false;
-    roomS: string[];
 
     constructor( 
         private router: Router,
@@ -28,7 +25,6 @@ export class HomeComponent implements OnInit {
         private roomAuthService: RoomAuthService) 
         {
             this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            this.roomS = new Array();
         }
 
     ngOnInit() {
@@ -77,16 +73,23 @@ export class HomeComponent implements OnInit {
 
     sendReqToClassroom(){
         this.loading = true;
-        this.classroomService.sendReq(this.model.roomName,this.currentUser).subscribe((data) => { 
+        this.classroomService.sendReq(this.model.roomName,this.currentUser).subscribe(() => { 
             this.loadUsersClassrooms();
-            this.classrooms.forEach(room => {
-                if(room.roomName.localeCompare(this.model.roomName)){
-                    this.userService.addPendReq(this.currentUser,room);
+        });
+        this.classroomService.getByName(this.model.roomName).subscribe((room:Classroom) => {
+            if(room.roomName == this.model.roomName){
+                    this.userService.addPendReq(this.currentUser,room).subscribe();
                 }
+            this.loading = false;
+        });
+    }
+
+    removeReq(classroom:Classroom){
+        this.classroomService.removePendingReq(this.currentUser,classroom).subscribe(() => { 
+            this.userService.removePendReq(this.currentUser, classroom).subscribe(()=>{
+                this.loadUsersClassrooms();
             });
         });
-        
-        this.loading = false;
     }
 
     deleteClassroom(_id: string) {
@@ -102,8 +105,13 @@ export class HomeComponent implements OnInit {
             this.classroomService.getByTeacherId(this.currentUser._id).subscribe(classrooms => { this.classrooms = classrooms;});
         }
         else{
-            this.userService.getClassrooms(this.currentUser._id).subscribe(rooms => { rooms.forEach(room =>{
+            this.userService.getClassrooms(this.currentUser._id).subscribe(rooms => 
+            { rooms.forEach( (room:string)=>{
                 this.getRoom(room);
+            })});
+            this.userService.getReqs(this.currentUser._id).subscribe(rooms => 
+            { rooms.forEach( (room:string)=>{
+                this.getReq(room);
             })});
         }
     }
@@ -125,4 +133,19 @@ export class HomeComponent implements OnInit {
         });
     }
    
+    getReq(cRoom: string){
+        this.classroomService.getById(cRoom).subscribe(
+            realRoom => { 
+                var j = false;
+                for(var i = 0; i < this.pendingReq.length; i++) {
+                    if(this.pendingReq[i]._id == realRoom._id) {
+                        j = true;
+                        break;
+                    }
+                }
+                if(j == false){
+                    this.pendingReq.push(realRoom); 
+                }
+        });
+    }
 }
