@@ -35,12 +35,31 @@ export class ClassroomService {
     }
 
     sendReq(roomName:string, student: User){
-        return this.http.put(this.config.apiUrl + '/classrooms/' + roomName, student,this.jwt());
+        return this.http.put(this.config.apiUrl + '/classrooms/sendReq/' + roomName, student,this.jwt());
+    }
+    getPendingReq(classroomId:string){
+        return this.http.get(this.config.apiUrl + '/classrooms/getReq/' + classroomId,this.jwt()).map((response: Response) => response.json());
+    }
+    acceptPendingReq(student:User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/classrooms/acceptReq/' + classroom._id, student,this.jwt());
     }
 
+    removePendingReq(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/classrooms/removeReq/' + classroom._id, student,this.jwt());
+    }
+    
     getReq(classroomid: string){
         return this.http.get(this.config.apiUrl + '/classrooms/pendingReq/' + classroomid,this.jwt()).map((response: Response) => response.json());
     }
+
+    getStudents(classroomid:string){
+        return this.http.get(this.config.apiUrl + '/classrooms/getStud/' + classroomid,this.jwt()).map((response: Response) => response.json());
+    }
+
+    removeStud(student:User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/classrooms/removeStud/' + classroom._id, student,this.jwt());
+    }
+    
     // private helper methods
     private jwt() {
         // create authorization header with jwt token

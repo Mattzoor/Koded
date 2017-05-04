@@ -14,7 +14,13 @@ router.get('/:_id', getById);
 
 router.get('/teacher/:teacherId',getByTeacherId);
 router.get('/student/:studentId',getByStudentId);
-router.put('/:roomName', sendReq);
+router.put('/sendReq/:roomName', sendReq);
+router.get('/getReq/:_id', getReq);
+router.put('/acceptReq/:_id', acceptReq);
+router.put('/removeReq/:_id', removeReq);
+router.get('/getStud/:_id', getStud);
+router.put('/removeStud/:_id',removeStud);
+
 
 module.exports = router;
 
@@ -56,7 +62,7 @@ function create(req, res) {
         })
         .catch(function (err) {
             res.status(400).send(err);
-        });
+        }); 
 }
 
 function getAll(req, res) {
@@ -105,7 +111,6 @@ function _delete(req, res) {
 
 //Specific Methods
 function getByTeacherId(req, res) {
-    console.log("Hejhej1");
     classroomService.getByTeacherId(req.params)
         .then(function (classroom) {
             if (classroom) {
@@ -120,7 +125,6 @@ function getByTeacherId(req, res) {
 }
 
 function getByStudentId(req, res) {
-    console.log("Hejhej2");
     classroomService.getByStudentId(req.params)
         .then(function (classroom) {
             if (classroom) {
@@ -136,6 +140,65 @@ function getByStudentId(req, res) {
 
 function sendReq(req, res){
     classroomService.sendReq(req.params, req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getReq(req, res) {
+    console.log("getReq");
+    classroomService.getReq(req.params)
+        .then(function (classroom) {
+            if (classroom) {
+                res.send(classroom);
+            } else {
+                res.sendStatus(404);
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function acceptReq(req,res){
+    classroomService.acceptReq(req.params, req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function removeReq(req, res){
+    classroomService.removeReq(req.params, req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getStud(req, res) {
+    classroomService.getStud(req.params)
+        .then(function (classroom) {
+            if (classroom) {
+                res.send(classroom);
+            } else {
+                res.sendStatus(404);
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function removeStud(req, res){
+    classroomService.removeStud(req.params, req.body)
         .then(function () {
             res.sendStatus(200);
         })

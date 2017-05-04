@@ -38,6 +38,15 @@ export class UserService {
         return this.http.put(this.config.apiUrl + '/users/exit/' + userId, room, this.jwt());
     }
 
+    updateRooms(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/updateRoom/' + classroom._id, student, this.jwt());
+    }
+    removeRooms(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/removePendReq/' + classroom._id, student, this.jwt());
+    }
+    removeStud(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/removeRoom/' + classroom._id, student, this.jwt());
+    }
     // private helper methods
 
     private jwt() {
