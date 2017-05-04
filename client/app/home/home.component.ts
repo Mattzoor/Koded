@@ -2,7 +2,7 @@
 import { Router } from '@angular/router';
 
 import { User, Classroom } from '../_models/index';
-import { AlertService, ClassroomService, RoomAuthService } from '../_services/index';
+import { AlertService, ClassroomService, RoomAuthService,UserService } from '../_services/index';
 
 @Component({
     moduleId: module.id,
@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
     constructor( 
         private router: Router,
         private classroomService: ClassroomService,
+        private userService: UserService,
         private alertService: AlertService,
         private roomAuthService: RoomAuthService) 
         {
@@ -59,7 +60,15 @@ export class HomeComponent implements OnInit {
 
     sendReqToClassroom(){
         this.loading = true;
-        this.classroomService.sendReq(this.model.roomName,this.currentUser).subscribe(() => { this.loadUsersClassrooms() });
+        this.classroomService.sendReq(this.model.roomName,this.currentUser).subscribe((data) => { 
+            this.loadUsersClassrooms();
+            this.classrooms.forEach(room => {
+                if(room.roomName.localeCompare(this.model.roomName)){
+                    this.userService.addPendReq(this.currentUser,room);
+                }
+            });
+        });
+        
         this.loading = false;
     }
 

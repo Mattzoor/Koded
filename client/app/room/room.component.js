@@ -77,14 +77,14 @@ var RoomComponent = (function () {
         var _this = this;
         this.classroomService.removePendingReq(student, this.currentRoom).subscribe(function (data) {
             _this.reloadFields();
-            //this.userService.removeRooms(student,this.currentRoom).subscribe(); 
+            _this.userService.removePendReq(student, _this.currentRoom).subscribe();
         });
     };
     RoomComponent.prototype.removeStudent = function (student) {
         var _this = this;
         this.classroomService.removeStud(student, this.currentRoom).subscribe(function (data) {
             _this.reloadFields();
-            //this.userService.removeStud(student,this.currentRoom).subscribe();
+            _this.userService.removeStud(student, _this.currentRoom).subscribe();
         });
     };
     return RoomComponent;

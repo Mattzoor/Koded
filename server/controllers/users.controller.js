@@ -12,6 +12,9 @@ router.get('/:_id', getById);
 router.put('/:_id', update);
 router.delete('/:_id', _delete);
 
+router.put('/updateRoom/:_id', updateRoom);
+router.put('/addPendReq/:_id', addPendReq);
+router.put('/removePendReq/:_id', removePendReq);
 module.exports = router;
 
 function authenticate(req, res) {
@@ -90,6 +93,36 @@ function update(req, res) {
 
 function _delete(req, res) {
     userService.delete(req.params._id)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function updateRoom(req, res) {
+    userService.updateRoom(req.params, req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function addPendReq(req,res){
+     userService.addPendReq(req.params, req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function removePendReq(req, res) {
+    userService.removePendReq(req.params, req.body)
         .then(function () {
             res.sendStatus(200);
         })

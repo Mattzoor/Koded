@@ -31,16 +31,20 @@ export class UserService {
 
 
     updateRooms(student: User, classroom:Classroom){
-        return this.http.put(this.config.apiUrl + '/users/updateRoom/' + classroom._id, student, this.jwt());
+        return this.http.put(this.config.apiUrl + '/users/updateRoom/' + student._id, classroom, this.jwt());
     }
-    removeRooms(student: User, classroom:Classroom){
-        return this.http.put(this.config.apiUrl + '/users/removePendReq/' + classroom._id, student, this.jwt());
+    addPendReq(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/addPendReq/' + student._id, classroom, this.jwt());
+    }
+    removePendReq(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/removePendReq/' + student._id, classroom, this.jwt());
     }
     removeStud(student: User, classroom:Classroom){
-        return this.http.put(this.config.apiUrl + '/users/removeRoom/' + classroom._id, student, this.jwt());
+        return this.http.put(this.config.apiUrl + '/users/removeRoom/' + student._id, classroom, this.jwt());
     }
-    // private helper methods
 
+
+    // private helper methods
     private jwt() {
         // create authorization header with jwt token
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));

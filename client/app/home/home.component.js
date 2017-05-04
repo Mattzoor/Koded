@@ -13,9 +13,10 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
 var HomeComponent = (function () {
-    function HomeComponent(router, classroomService, alertService, roomAuthService) {
+    function HomeComponent(router, classroomService, userService, alertService, roomAuthService) {
         this.router = router;
         this.classroomService = classroomService;
+        this.userService = userService;
         this.alertService = alertService;
         this.roomAuthService = roomAuthService;
         this.classrooms = [];
@@ -54,7 +55,14 @@ var HomeComponent = (function () {
     HomeComponent.prototype.sendReqToClassroom = function () {
         var _this = this;
         this.loading = true;
-        this.classroomService.sendReq(this.model.roomName, this.currentUser).subscribe(function () { _this.loadUsersClassrooms(); });
+        this.classroomService.sendReq(this.model.roomName, this.currentUser).subscribe(function (data) {
+            _this.loadUsersClassrooms();
+            _this.classrooms.forEach(function (room) {
+                if (room.roomName.localeCompare(_this.model.roomName)) {
+                    _this.userService.addPendReq(_this.currentUser, room);
+                }
+            });
+        });
         this.loading = false;
     };
     HomeComponent.prototype.deleteClassroom = function (_id) {
@@ -83,6 +91,7 @@ HomeComponent = __decorate([
     }),
     __metadata("design:paramtypes", [router_1.Router,
         index_1.ClassroomService,
+        index_1.UserService,
         index_1.AlertService,
         index_1.RoomAuthService])
 ], HomeComponent);

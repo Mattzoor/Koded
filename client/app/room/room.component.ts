@@ -91,7 +91,7 @@ export class RoomComponent implements OnInit {
         this.classroomService.removePendingReq(student, this.currentRoom).subscribe(
             data => {
                 this.reloadFields();
-                //this.userService.removeRooms(student,this.currentRoom).subscribe(); 
+                this.userService.removePendReq(student,this.currentRoom).subscribe(); 
         });    
     }
 
@@ -99,7 +99,7 @@ export class RoomComponent implements OnInit {
         this.classroomService.removeStud(student, this.currentRoom).subscribe(
             data => {
                 this.reloadFields();
-                //this.userService.removeStud(student,this.currentRoom).subscribe();
+                this.userService.removeStud(student,this.currentRoom).subscribe();
         });
     }
     

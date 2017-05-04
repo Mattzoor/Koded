@@ -33,13 +33,16 @@ var UserService = (function () {
         return this.http.delete(this.config.apiUrl + '/users/' + _id, this.jwt());
     };
     UserService.prototype.updateRooms = function (student, classroom) {
-        return this.http.put(this.config.apiUrl + '/users/updateRoom/' + classroom._id, student, this.jwt());
+        return this.http.put(this.config.apiUrl + '/users/updateRoom/' + student._id, classroom, this.jwt());
     };
-    UserService.prototype.removeRooms = function (student, classroom) {
-        return this.http.put(this.config.apiUrl + '/users/removePendReq/' + classroom._id, student, this.jwt());
+    UserService.prototype.addPendReq = function (student, classroom) {
+        return this.http.put(this.config.apiUrl + '/users/addPendReq/' + student._id, classroom, this.jwt());
+    };
+    UserService.prototype.removePendReq = function (student, classroom) {
+        return this.http.put(this.config.apiUrl + '/users/removePendReq/' + student._id, classroom, this.jwt());
     };
     UserService.prototype.removeStud = function (student, classroom) {
-        return this.http.put(this.config.apiUrl + '/users/removeRoom/' + classroom._id, student, this.jwt());
+        return this.http.put(this.config.apiUrl + '/users/removeRoom/' + student._id, classroom, this.jwt());
     };
     // private helper methods
     UserService.prototype.jwt = function () {

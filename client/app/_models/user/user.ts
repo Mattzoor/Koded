@@ -5,5 +5,6 @@
     firstName: string;
     lastName: string;
     teacher: boolean;
+    pendingReqs: string[];
     classroomIds: string[];
 }

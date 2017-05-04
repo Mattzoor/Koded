@@ -16,6 +16,9 @@ service.create = create;
 service.update = update;
 service.delete = _delete;
 
+service.updateRoom = updateRoom;
+service.addPendReq = addPendReq;
+service.removePendReq = removePendReq;
 module.exports = service;
 
 function authenticate(username, password) {
@@ -145,7 +148,7 @@ function update(_id, userParam) {
             firstName: userParam.firstName,
             lastName: userParam.lastName,
             username: userParam.username,
-            teacher: userParam.teacher,
+            teacher: userParam.teacher
         };
 
         // update password if it was entered
@@ -178,4 +181,140 @@ function _delete(_id) {
         });
 
     return deferred.promise;
+}
+
+function updateRoom(student, classroom){
+    var deferred = Q.defer();
+        // validation
+        db.users.findById(student._id, function (err, user) {
+            if (err) deferred.reject(err.username + ': ' + err.message);
+
+            if(user){
+                updateRoom(user);
+            }
+        });
+
+        function updateRoom(user) {
+            // fields to update
+            var set = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                teacher: user.teacher,
+                pendingReq: [],
+                classroomIds:[]
+            };
+
+            if(user.pendingReq != null){
+                user.pendingReq.forEach(function(_id) {
+                    if(_id != classroom._id){
+                        set.pendingReq.push(_id);
+                    }
+                }, this); 
+            }
+
+            if(user.classroomIds != null){
+                set.classroomIds = user.classroomIds;
+                set.classroomIds.push(classroom._id);   
+            }            
+
+            db.users.update(
+                { _id: mongo.helper.toObjectID(user._id) },
+                { $set: set },
+                function (err, doc) {
+                    if (err) deferred.reject(err.username + ': ' + err.message);
+
+                    deferred.resolve();
+                });
+        }
+        return deferred.promise;
+}
+
+
+function addPendReq(student,classroom){
+    var deferred = Q.defer();
+        // validation
+        db.users.findById(student._id, function (err, user) {
+            if (err) deferred.reject(err.username + ': ' + err.message);
+
+            if(user){
+                addPendingReq(user);
+            }
+        });
+
+        function addPendingReq(user) {
+            // fields to update
+            var set = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                teacher: user.teacher,
+                pendingReq: [],
+                classroomIds:[]
+            };
+
+            if(user.pendingReq != null){
+                set.pendingReq = user.pendingReq; 
+            }
+
+            if(user.classroomIds != null){
+                set.classroomIds = user.classroomIds;   
+            }            
+
+            db.users.update(
+                { _id: mongo.helper.toObjectID(user._id) },
+                { $set: set },
+                function (err, doc) {
+                    if (err) deferred.reject(err.username + ': ' + err.message);
+
+                    deferred.resolve();
+                });
+        }
+        return deferred.promise;
+}
+
+function removePendReq(student,classroom){
+    var deferred = Q.defer();
+        // validation
+        db.users.findById(student._id, function (err, user) {
+            if (err) deferred.reject(err.username + ': ' + err.message);
+
+            if(user){
+                removePendingReq(user);
+            }
+        });
+
+        function removePendingReq(user) {
+            // fields to update
+            var set = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                teacher: user.teacher,
+                pendingReq: [],
+                classroomIds:[]
+            };
+
+            if(user.pendingReq != null){
+                user.pendingReq.forEach(function(_id) {
+                    if(_id != classroom._id){
+                        set.pendingReq.push(_id);
+                    }
+                }, this); 
+            }
+
+            if(user.classroomIds != null){
+                set.classroomIds = user.classroomIds;   
+            }            
+
+            db.users.update(
+                { _id: mongo.helper.toObjectID(user._id) },
+                { $set: set },
+                function (err, doc) {
+                    if (err) deferred.reject(err.username + ': ' + err.message);
+
+                    deferred.resolve();
+                });
+        }
+        return deferred.promise;
 }
