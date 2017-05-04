@@ -6,6 +6,7 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 db.bind('classrooms');
+db.bind('users');
 
 var service = {};
 
@@ -19,11 +20,15 @@ service.delete = _delete;
 service.getByTeacherId = getByTeacherId;
 service.getByStudentId = getByStudentId;
 service.sendReq = sendReq;
+<<<<<<< HEAD
+//service.getReq = getReq;
+=======
 service.getReq = getReq;
 service.acceptReq = acceptReq;
 service.removeReq = removeReq;
 service.getStud = getStud;
 service.removeStud = removeStud;
+>>>>>>> 6d87a72834e2dac4aa548856bdaa35f39caced36
 
 module.exports = service;
 
@@ -63,15 +68,14 @@ function getAll() {
 
 function getById(_id) {
     var deferred = Q.defer();
-
-    db.classrooms.findById(_id, function (err, classroom) {
-        if (err) deferred.reject(err.roomName + ': ' + err.message);
+    db.classrooms.findOne({_id: mongo.helper.toObjectID(_id)}, function (err, classroom) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (classroom) {
-            // return classroom (without hashed password)
-            deferred.resolve(_.omit(classroom, 'hash'));
+            // return user (without hashed password)
+            deferred.resolve(classroom);
         } else {
-            // classroom not found
+            // user not found
             deferred.resolve();
         }
     });
@@ -111,6 +115,7 @@ function create(classroomParam) {
 
 function update(_id, classroomParam) {
     var deferred = Q.defer();
+    console.log(_id +'      ' + classroomParam);
     // validation
     db.classrooms.findById(_id, function (err, classroom) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
@@ -181,10 +186,21 @@ function getByTeacherId(obj) {
 
 function getByStudentId(obj) {
     var deferred = Q.defer();
-    /*db.classrooms.find({"teacherId": obj.teacherId}).toArray( function (err, classrooms) {
+    console.log("haha" + obj.studentId);
+    db.users.findOne({"studentId": obj.studentId}).toArray( function (err, user) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
-        deferred.resolve(classrooms);
-    });*/
+        console.log(user.classroomIds)
+        if(user.classroomIds != null){
+            console.log(user.classroomIds)
+        }
+
+        if(user){
+            deferred.resolve(user);
+        } else {
+            // user not found
+            deferred.resolve();
+        }
+    });
     return deferred.promise;
 }
 

@@ -38,7 +38,7 @@ var RoomComponent = (function () {
         var _this = this;
         this.pendingReq = new Array();
         this.currentRoom.pendingReq.forEach(function (user) {
-            _this.userService.getById(user).subscribe(function (user) {
+            _this.userService.getById(user._id).subscribe(function (user) {
                 _this.pendingReq.push(user);
             });
         });
@@ -47,7 +47,7 @@ var RoomComponent = (function () {
         var _this = this;
         this.students = new Array();
         this.currentRoom.students.forEach(function (user) {
-            _this.userService.getById(user).subscribe(function (user) {
+            _this.userService.getById(user._id).subscribe(function (user) {
                 _this.students.push(user);
             });
         });

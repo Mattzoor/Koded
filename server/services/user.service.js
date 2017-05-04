@@ -6,6 +6,7 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 db.bind('users');
+db.bind('classrooms');
 
 var service = {};
 
@@ -15,11 +16,71 @@ service.getById = getById;
 service.create = create;
 service.update = update;
 service.delete = _delete;
+service.getClassrooms = getClassrooms;
+service.exitClassroom = exitClassroom;
 
 service.updateRoom = updateRoom;
 service.addPendReq = addPendReq;
 service.removePendReq = removePendReq;
 module.exports = service;
+
+function exitClassroom(userId, roomId){
+    //console.log("1  " + userId + "    " + roomId);
+    var deferred = Q.defer();
+    db.users.findOne({_id: mongo.helper.toObjectID(userId)}, function (err, user) {
+        if (err) deferred.reject(err.username + ': ' + err.message);
+
+        if(user){
+            //console.log("2  " + user + "    " + roomId);
+            exit(roomId, user);
+        }
+    });
+
+    function exit(roomId, user) {
+        // fields to update
+        var set = {
+            classroomIds: []
+        };
+        console.log("2  " + user.classroomIds);
+        if(user.classroomIds != null){
+            set.classroomIds = user.classroomIds;
+        }
+        console.log("3  " + set.classroomIds);
+        if(set.classroomIds.indexOf(roomId) != -1){
+            var i = set.classroomIds.indexOf(roomId);
+            set.classroomIds.splice(i, 1);
+            console.log("asd  " + set.classroomIds);
+        }
+            
+        console.log("4  " + set.classroomIds);
+        db.users.update(
+            { _id: mongo.helper.toObjectID(userId) },
+            { $set: set },
+            function (err, doc) {
+                if (err) deferred.reject(err.username + ': ' + err.message);
+
+                deferred.resolve();
+            });
+    }
+    return deferred.promise;
+}
+
+function getClassrooms(_id){
+    var deferred = Q.defer();
+    // validation
+    db.users.findOne({_id: mongo.helper.toObjectID(_id)}, function (err, user) {
+        if (err) deferred.reject(err.username + ': ' + err.message);
+        if(user){
+            if(user.classroomIds != null){
+                classrooms = user.classroomIds;
+            }
+            deferred.resolve(classrooms);
+        }
+    });
+    return deferred.promise;
+    
+}
+
 
 function authenticate(username, password) {
     var deferred = Q.defer();
@@ -65,6 +126,7 @@ function getAll() {
 
 function getById(_id) {
     var deferred = Q.defer();
+    //console.log(_id);
     db.users.findOne({_id: mongo.helper.toObjectID(_id)}, function (err, user) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
