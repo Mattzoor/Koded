@@ -20,15 +20,11 @@ service.delete = _delete;
 service.getByTeacherId = getByTeacherId;
 service.getByStudentId = getByStudentId;
 service.sendReq = sendReq;
-<<<<<<< HEAD
-//service.getReq = getReq;
-=======
 service.getReq = getReq;
 service.acceptReq = acceptReq;
 service.removeReq = removeReq;
 service.getStud = getStud;
 service.removeStud = removeStud;
->>>>>>> 6d87a72834e2dac4aa548856bdaa35f39caced36
 
 module.exports = service;
 

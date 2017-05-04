@@ -72,9 +72,9 @@ function getClassrooms(_id){
         if (err) deferred.reject(err.username + ': ' + err.message);
         if(user){
             if(user.classroomIds != null){
-                classrooms = user.classroomIds;
+                classrooms = user.classroomIds; 
+                deferred.resolve(classrooms);
             }
-            deferred.resolve(classrooms);
         }
     });
     return deferred.promise;
