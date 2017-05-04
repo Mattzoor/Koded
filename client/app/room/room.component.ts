@@ -22,32 +22,85 @@ export class RoomComponent implements OnInit {
         private classroomService: ClassroomService,
         private userService:UserService,
         private alertService: AlertService) { 
-             this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-             this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
-             this.pendingReq = new Array();
+            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+            this.pendingReq = new Array();
+            this.students = new Array();
     }
 
     ngOnInit(){
         if(this.currentUser.teacher && this.currentRoom.pendingReq != null){
-            this.currentRoom.pendingReq.forEach(user => {
-                this.getReq(user);
-            });
+            this.reloadFields();
         }
     }
 
-    getReq(user: any){
-        this.userService.getById(user).subscribe(
-            user => { this.pendingReq.push(user); 
-            }
+    reloadFields(){
+        this.getPendingReq();
+        this.getStudents();
+    }
+
+    getUserToReq(){
+        this.pendingReq = new Array();
+        this.currentRoom.pendingReq.forEach(user => {
+            this.userService.getById(user).subscribe(
+                user => { 
+                    this.pendingReq.push(user); 
+                }
+            ); 
+        });
+    }
+
+    getUserToStud(){
+        this.students = new Array();
+        this.currentRoom.students.forEach(user => {
+            this.userService.getById(user).subscribe(
+                user => { 
+                    this.students.push(user); 
+                }
+            ); 
+        });
+    }
+
+    getPendingReq(){
+        this.classroomService.getPendingReq(this.currentRoom._id).subscribe(
+            data => {   this.currentRoom.pendingReq = data;
+                        this.getUserToReq();    
+                }
         );
     }
 
-    acceptPendingReq(student:any){
-
+    getStudents(){
+        this.classroomService.getStudents(this.currentRoom._id).subscribe(
+            data => {   this.currentRoom.students = data;
+                        this.getUserToStud();    
+                }
+        );
     }
 
-    removePendingReq(student:any){
+    acceptPendingReq(student:User){
+        this.classroomService.acceptPendingReq(student, this.currentRoom).subscribe(
+            data => {
+                this.reloadFields();
+                this.userService.updateRooms(student,this.currentRoom).subscribe();
+            }
+        );
+        
     }
 
+    removePendingReq(student:User){
+        this.classroomService.removePendingReq(student, this.currentRoom).subscribe(
+            data => {
+                this.reloadFields();
+                //this.userService.removeRooms(student,this.currentRoom).subscribe(); 
+        });    
+    }
+
+    removeStudent(student:User){
+        this.classroomService.removeStud(student, this.currentRoom).subscribe(
+            data => {
+                this.reloadFields();
+                //this.userService.removeStud(student,this.currentRoom).subscribe();
+        });
+    }
     
 }

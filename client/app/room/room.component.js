@@ -23,24 +23,69 @@ var RoomComponent = (function () {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
         this.pendingReq = new Array();
+        this.students = new Array();
     }
     RoomComponent.prototype.ngOnInit = function () {
-        var _this = this;
         if (this.currentUser.teacher && this.currentRoom.pendingReq != null) {
-            this.currentRoom.pendingReq.forEach(function (user) {
-                _this.getReq(user);
-            });
+            this.reloadFields();
         }
     };
-    RoomComponent.prototype.getReq = function (user) {
+    RoomComponent.prototype.reloadFields = function () {
+        this.getPendingReq();
+        this.getStudents();
+    };
+    RoomComponent.prototype.getUserToReq = function () {
         var _this = this;
-        this.userService.getById(user).subscribe(function (user) {
-            _this.pendingReq.push(user);
+        this.pendingReq = new Array();
+        this.currentRoom.pendingReq.forEach(function (user) {
+            _this.userService.getById(user).subscribe(function (user) {
+                _this.pendingReq.push(user);
+            });
+        });
+    };
+    RoomComponent.prototype.getUserToStud = function () {
+        var _this = this;
+        this.students = new Array();
+        this.currentRoom.students.forEach(function (user) {
+            _this.userService.getById(user).subscribe(function (user) {
+                _this.students.push(user);
+            });
+        });
+    };
+    RoomComponent.prototype.getPendingReq = function () {
+        var _this = this;
+        this.classroomService.getPendingReq(this.currentRoom._id).subscribe(function (data) {
+            _this.currentRoom.pendingReq = data;
+            _this.getUserToReq();
+        });
+    };
+    RoomComponent.prototype.getStudents = function () {
+        var _this = this;
+        this.classroomService.getStudents(this.currentRoom._id).subscribe(function (data) {
+            _this.currentRoom.students = data;
+            _this.getUserToStud();
         });
     };
     RoomComponent.prototype.acceptPendingReq = function (student) {
+        var _this = this;
+        this.classroomService.acceptPendingReq(student, this.currentRoom).subscribe(function (data) {
+            _this.reloadFields();
+            _this.userService.updateRooms(student, _this.currentRoom).subscribe();
+        });
     };
     RoomComponent.prototype.removePendingReq = function (student) {
+        var _this = this;
+        this.classroomService.removePendingReq(student, this.currentRoom).subscribe(function (data) {
+            _this.reloadFields();
+            //this.userService.removeRooms(student,this.currentRoom).subscribe(); 
+        });
+    };
+    RoomComponent.prototype.removeStudent = function (student) {
+        var _this = this;
+        this.classroomService.removeStud(student, this.currentRoom).subscribe(function (data) {
+            _this.reloadFields();
+            //this.userService.removeStud(student,this.currentRoom).subscribe();
+        });
     };
     return RoomComponent;
 }());

@@ -20,6 +20,10 @@ service.getByTeacherId = getByTeacherId;
 service.getByStudentId = getByStudentId;
 service.sendReq = sendReq;
 service.getReq = getReq;
+service.acceptReq = acceptReq;
+service.removeReq = removeReq;
+service.getStud = getStud;
+service.removeStud = removeStud;
 
 module.exports = service;
 
@@ -107,7 +111,6 @@ function create(classroomParam) {
 
 function update(_id, classroomParam) {
     var deferred = Q.defer();
-    console.log(_id +'      ' + classroomParam);
     // validation
     db.classrooms.findById(_id, function (err, classroom) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
@@ -218,6 +221,173 @@ function sendReq(roomName, studentParam){
             set.pendingReq.push(studentParam._id);
         }
             
+
+        db.classrooms.update(
+            { _id: mongo.helper.toObjectID(classroom._id) },
+            { $set: set },
+            function (err, doc) {
+                if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+                deferred.resolve();
+            });
+    }
+    return deferred.promise;
+}
+
+function getReq(classroom){
+    console.log(classroom._id);
+    
+    var deferred = Q.defer();
+    db.classrooms.findOne({_id: mongo.helper.toObjectID(classroom._id)}, function (err, classroom) {
+        if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+        if (classroom) {
+            console.log(classroom.pendingReq);
+            deferred.resolve(classroom.pendingReq);
+        }
+    });
+    
+    return deferred.promise;
+}
+
+function acceptReq(classroom,student){
+    
+    var deferred = Q.defer();
+    // validation
+    
+    db.classrooms.findById(classroom._id, function (err, classroom) {
+        if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+        if(classroom){
+            acceptReqFromRoom(classroom);
+        }
+    });
+
+    function acceptReqFromRoom(classroom) {
+        // fields to update
+        var set = {
+            roomName: classroom.roomName,
+            teacherId: classroom.teacherId,
+            students: [],
+            pendingReq: []
+        };
+
+
+        if(classroom.pendingReq != null){  
+            classroom.pendingReq.forEach(function(_id) {
+                if(_id != student._id){
+                    set.pendingReq.push(_id);
+                }
+            }, this);              
+        }            
+
+        if(classroom.students != null){
+            set.students = classroom.students;
+            set.students.push(student._id);
+        }
+
+        db.classrooms.update(
+            { _id: mongo.helper.toObjectID(classroom._id) },
+            { $set: set },
+            function (err, doc) {
+                if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+                deferred.resolve();
+            });
+    }
+    return deferred.promise;
+}
+
+function removeReq(classroom,student){
+    var deferred = Q.defer();
+    // validation
+    
+    db.classrooms.findById(classroom._id, function (err, classroom) {
+        if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+        if(classroom){
+            removeReqFromRoom(classroom);
+        }
+    });
+
+    function removeReqFromRoom(classroom) {
+        // fields to update
+        var set = {
+            roomName: classroom.roomName,
+            teacherId: classroom.teacherId,
+            students: [],
+            pendingReq: []
+        };
+
+        if(classroom.students != null){
+            set.students = classroom.students;
+        }
+
+        if(classroom.pendingReq != null){  
+            classroom.pendingReq.forEach(function(_id) {
+                if(_id != student._id){
+                    set.pendingReq.push(_id);
+                }
+            }, this);              
+        }            
+
+        db.classrooms.update(
+            { _id: mongo.helper.toObjectID(classroom._id) },
+            { $set: set },
+            function (err, doc) {
+                if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+                deferred.resolve();
+            });
+    }
+    return deferred.promise;
+}
+
+function getStud(classroom){
+    var deferred = Q.defer();
+    db.classrooms.findOne({_id: mongo.helper.toObjectID(classroom._id)}, function (err, classroom) {
+        if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+        if (classroom) {
+            deferred.resolve(classroom.students);
+        }
+    });
+    
+    return deferred.promise;
+}
+
+function removeStud(classroom,student){
+    var deferred = Q.defer();
+    // validation
+    
+    db.classrooms.findById(classroom._id, function (err, classroom) {
+        if (err) deferred.reject(err.roomName + ': ' + err.message);
+
+        if(classroom){
+            removeStudFromRoom(classroom);
+        }
+    });
+
+    function removeStudFromRoom(classroom) {
+        // fields to update
+        var set = {
+            roomName: classroom.roomName,
+            teacherId: classroom.teacherId,
+            students: [],
+            pendingReq: []
+        };
+
+        if(classroom.students != null){
+            classroom.students.forEach(function(_id) {
+                if(_id != student._id){
+                    set.students.push(_id);
+                }
+            }, this); 
+        }
+
+        if(classroom.pendingReq != null){
+            set.pendingReq = classroom.pendingReq;   
+        }            
 
         db.classrooms.update(
             { _id: mongo.helper.toObjectID(classroom._id) },

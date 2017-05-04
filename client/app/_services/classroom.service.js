@@ -40,10 +40,25 @@ var ClassroomService = (function () {
         return this.http.get(this.config.apiUrl + '/classrooms/student/' + studentId, this.jwt()).map(function (response) { return response.json(); });
     };
     ClassroomService.prototype.sendReq = function (roomName, student) {
-        return this.http.put(this.config.apiUrl + '/classrooms/' + roomName, student, this.jwt());
+        return this.http.put(this.config.apiUrl + '/classrooms/sendReq/' + roomName, student, this.jwt());
+    };
+    ClassroomService.prototype.getPendingReq = function (classroomId) {
+        return this.http.get(this.config.apiUrl + '/classrooms/getReq/' + classroomId, this.jwt()).map(function (response) { return response.json(); });
+    };
+    ClassroomService.prototype.acceptPendingReq = function (student, classroom) {
+        return this.http.put(this.config.apiUrl + '/classrooms/acceptReq/' + classroom._id, student, this.jwt());
+    };
+    ClassroomService.prototype.removePendingReq = function (student, classroom) {
+        return this.http.put(this.config.apiUrl + '/classrooms/removeReq/' + classroom._id, student, this.jwt());
     };
     ClassroomService.prototype.getReq = function (classroomid) {
         return this.http.get(this.config.apiUrl + '/classrooms/pendingReq/' + classroomid, this.jwt()).map(function (response) { return response.json(); });
+    };
+    ClassroomService.prototype.getStudents = function (classroomid) {
+        return this.http.get(this.config.apiUrl + '/classrooms/getStud/' + classroomid, this.jwt()).map(function (response) { return response.json(); });
+    };
+    ClassroomService.prototype.removeStud = function (student, classroom) {
+        return this.http.put(this.config.apiUrl + '/classrooms/removeStud/' + classroom._id, student, this.jwt());
     };
     // private helper methods
     ClassroomService.prototype.jwt = function () {

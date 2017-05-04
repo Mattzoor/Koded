@@ -62,7 +62,6 @@ function getAll() {
 
 function getById(_id) {
     var deferred = Q.defer();
-    console.log(_id);
     db.users.findOne({_id: mongo.helper.toObjectID(_id)}, function (err, user) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 

@@ -2,7 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { AppConfig } from '../app.config';
-import { User } from '../_models/index';
+import { Classroom, User } from '../_models/index';
 
 @Injectable()
 export class UserService {
@@ -28,6 +28,17 @@ export class UserService {
         return this.http.delete(this.config.apiUrl + '/users/' + _id, this.jwt());
     }
 
+
+
+    updateRooms(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/updateRoom/' + classroom._id, student, this.jwt());
+    }
+    removeRooms(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/removePendReq/' + classroom._id, student, this.jwt());
+    }
+    removeStud(student: User, classroom:Classroom){
+        return this.http.put(this.config.apiUrl + '/users/removeRoom/' + classroom._id, student, this.jwt());
+    }
     // private helper methods
 
     private jwt() {
