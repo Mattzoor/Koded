@@ -2,7 +2,7 @@
 import { Router } from '@angular/router';
 
 import { User, Classroom } from '../_models/index';
-import { AlertService, ClassroomService, RoomAuthService } from '../_services/index';
+import { AlertService, ClassroomService, UserService, RoomAuthService } from '../_services/index';
 
 @Component({
     moduleId: module.id,
@@ -14,19 +14,23 @@ export class HomeComponent implements OnInit {
     classrooms: Classroom[] = [];
     model: any = {};
     loading = false;
+    roomS: string[];
 
     constructor( 
         private router: Router,
         private classroomService: ClassroomService,
+        private userService: UserService,
         private alertService: AlertService,
         private roomAuthService: RoomAuthService) 
         {
             this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            this.roomS = new Array();
         }
 
     ngOnInit() {
         this.loadUsersClassrooms();
         this.roomAuthService.exitRoom();
+        console.log(this.classrooms);
     }
     
     createClassroom(){
@@ -57,6 +61,16 @@ export class HomeComponent implements OnInit {
                 });
     }
 
+    exitClassroom(room:Classroom){
+        for(var i = 0; i < this.classrooms.length; i++) {
+            if(this.classrooms[i]._id == room._id) {
+                this.classrooms.splice(i, 1);
+                break;
+            }
+        }
+        this.userService.exitClassroom(this.currentUser._id, room).subscribe(() => {this.loadUsersClassrooms() });
+    }
+
     sendReqToClassroom(){
         this.loading = true;
         this.classroomService.sendReq(this.model.roomName,this.currentUser).subscribe(() => { this.loadUsersClassrooms() });
@@ -71,13 +85,32 @@ export class HomeComponent implements OnInit {
         this.classroomService.getAll().subscribe(classrooms => { this.classrooms = classrooms; })
     }
 
-    private loadUsersClassrooms(){
+    loadUsersClassrooms(){
         if(this.currentUser.teacher){
             this.classroomService.getByTeacherId(this.currentUser._id).subscribe(classrooms => { this.classrooms = classrooms;});
         }
         else{
-            this.classroomService.getByStudentId(this.currentUser._id).subscribe(classrooms => { this.classrooms = classrooms;});
+            this.userService.getClassrooms(this.currentUser._id).subscribe(rooms => { rooms.forEach(room =>{
+                this.getRoom(room);
+            })});
         }
+    }
+
+    getRoom(cRoom: string){
+        console.log(cRoom);
+        this.classroomService.getById(cRoom).subscribe(
+            realRoom => { 
+                var j = false;
+                for(var i = 0; i < this.classrooms.length; i++) {
+                    if(this.classrooms[i]._id == realRoom._id) {
+                        j = true;
+                        break;
+                    }
+                }
+                if(j == false){
+                    this.classrooms.push(realRoom); 
+                }
+        });
     }
    
 }

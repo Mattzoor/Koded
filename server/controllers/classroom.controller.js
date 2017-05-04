@@ -10,6 +10,7 @@ router.get('/', getAll);
 router.get('/current', getCurrent);
 router.put('/:_id', update);
 router.delete('/:_id', _delete);
+router.get('/:_id', getById);
 
 router.get('/teacher/:teacherId',getByTeacherId);
 router.get('/student/:studentId',getByStudentId);
@@ -26,6 +27,21 @@ function authenticate(req, res) {
             } else {
                 // authentication failed'
                 res.status(401).send('classroom authentication error');
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getById(req, res) {
+    classroomService.getById(req.params._id)
+        .then(function (classroom) {
+            if (classroom) {
+                //console.log(user);
+                res.send(classroom);
+            } else {
+                res.sendStatus(404);
             }
         })
         .catch(function (err) {

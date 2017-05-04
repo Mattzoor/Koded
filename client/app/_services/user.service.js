@@ -23,6 +23,10 @@ var UserService = (function () {
     UserService.prototype.getById = function (_id) {
         return this.http.get(this.config.apiUrl + '/users/' + _id, this.jwt()).map(function (response) { return response.json(); });
     };
+    UserService.prototype.getClassrooms = function (_id) {
+        console.log("asd");
+        return this.http.get(this.config.apiUrl + '/users/rooms/' + _id, this.jwt()).map(function (response) { return response.json(); });
+    };
     UserService.prototype.create = function (user) {
         return this.http.post(this.config.apiUrl + '/users/register', user, this.jwt());
     };
@@ -31,6 +35,10 @@ var UserService = (function () {
     };
     UserService.prototype.delete = function (_id) {
         return this.http.delete(this.config.apiUrl + '/users/' + _id, this.jwt());
+    };
+    UserService.prototype.exitClassroom = function (userId, room) {
+        //console.log(userId + "    " + room);
+        return this.http.put(this.config.apiUrl + '/users/exit/' + userId, room, this.jwt());
     };
     // private helper methods
     UserService.prototype.jwt = function () {

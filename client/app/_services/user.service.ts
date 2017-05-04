@@ -2,7 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { AppConfig } from '../app.config';
-import { User } from '../_models/index';
+import { User, Classroom } from '../_models/index';
 
 @Injectable()
 export class UserService {
@@ -16,6 +16,11 @@ export class UserService {
         return this.http.get(this.config.apiUrl + '/users/' + _id, this.jwt()).map((response: Response) => response.json());
     }
 
+    getClassrooms(_id:string){
+        console.log("asd");
+        return this.http.get(this.config.apiUrl + '/users/rooms/' + _id,this.jwt()).map((response: Response) => response.json());
+    }
+
     create(user: User) {
         return this.http.post(this.config.apiUrl + '/users/register', user, this.jwt());
     }
@@ -26,6 +31,11 @@ export class UserService {
 
     delete(_id: string) {
         return this.http.delete(this.config.apiUrl + '/users/' + _id, this.jwt());
+    }
+
+    exitClassroom(userId: string, room: Classroom){
+        //console.log(userId + "    " + room);
+        return this.http.put(this.config.apiUrl + '/users/exit/' + userId, room, this.jwt());
     }
 
     // private helper methods

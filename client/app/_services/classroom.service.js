@@ -36,9 +36,6 @@ var ClassroomService = (function () {
     ClassroomService.prototype.getByTeacherId = function (teacherId) {
         return this.http.get(this.config.apiUrl + '/classrooms/teacher/' + teacherId, this.jwt()).map(function (response) { return response.json(); });
     };
-    ClassroomService.prototype.getByStudentId = function (studentId) {
-        return this.http.get(this.config.apiUrl + '/classrooms/student/' + studentId, this.jwt()).map(function (response) { return response.json(); });
-    };
     ClassroomService.prototype.sendReq = function (roomName, student) {
         return this.http.put(this.config.apiUrl + '/classrooms/' + roomName, student, this.jwt());
     };

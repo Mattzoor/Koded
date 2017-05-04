@@ -13,19 +13,22 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
 var HomeComponent = (function () {
-    function HomeComponent(router, classroomService, alertService, roomAuthService) {
+    function HomeComponent(router, classroomService, userService, alertService, roomAuthService) {
         this.router = router;
         this.classroomService = classroomService;
+        this.userService = userService;
         this.alertService = alertService;
         this.roomAuthService = roomAuthService;
         this.classrooms = [];
         this.model = {};
         this.loading = false;
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.roomS = new Array();
     }
     HomeComponent.prototype.ngOnInit = function () {
         this.loadUsersClassrooms();
         this.roomAuthService.exitRoom();
+        console.log(this.classrooms);
     };
     HomeComponent.prototype.createClassroom = function () {
         var _this = this;
@@ -51,6 +54,16 @@ var HomeComponent = (function () {
             _this.loading = false;
         });
     };
+    HomeComponent.prototype.exitClassroom = function (room) {
+        var _this = this;
+        for (var i = 0; i < this.classrooms.length; i++) {
+            if (this.classrooms[i]._id == room._id) {
+                this.classrooms.splice(i, 1);
+                break;
+            }
+        }
+        this.userService.exitClassroom(this.currentUser._id, room).subscribe(function () { _this.loadUsersClassrooms(); });
+    };
     HomeComponent.prototype.sendReqToClassroom = function () {
         var _this = this;
         this.loading = true;
@@ -71,8 +84,28 @@ var HomeComponent = (function () {
             this.classroomService.getByTeacherId(this.currentUser._id).subscribe(function (classrooms) { _this.classrooms = classrooms; });
         }
         else {
-            this.classroomService.getByStudentId(this.currentUser._id).subscribe(function (classrooms) { _this.classrooms = classrooms; });
+            this.userService.getClassrooms(this.currentUser._id).subscribe(function (rooms) {
+                rooms.forEach(function (room) {
+                    _this.getRoom(room);
+                });
+            });
         }
+    };
+    HomeComponent.prototype.getRoom = function (cRoom) {
+        var _this = this;
+        console.log(cRoom);
+        this.classroomService.getById(cRoom).subscribe(function (realRoom) {
+            var j = false;
+            for (var i = 0; i < _this.classrooms.length; i++) {
+                if (_this.classrooms[i]._id == realRoom._id) {
+                    j = true;
+                    break;
+                }
+            }
+            if (j == false) {
+                _this.classrooms.push(realRoom);
+            }
+        });
     };
     return HomeComponent;
 }());
@@ -83,6 +116,7 @@ HomeComponent = __decorate([
     }),
     __metadata("design:paramtypes", [router_1.Router,
         index_1.ClassroomService,
+        index_1.UserService,
         index_1.AlertService,
         index_1.RoomAuthService])
 ], HomeComponent);

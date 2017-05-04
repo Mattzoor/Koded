@@ -34,10 +34,6 @@ export class ClassroomService {
         return this.http.get(this.config.apiUrl + '/classrooms/teacher/' + teacherId,this.jwt()).map((response: Response) => response.json());
     }
 
-    getByStudentId(studentId:string){
-        return this.http.get(this.config.apiUrl + '/classrooms/student/' + studentId,this.jwt()).map((response: Response) => response.json());
-    }
-
     sendReq(roomName:string, student: User){
         return this.http.put(this.config.apiUrl + '/classrooms/' + roomName, student,this.jwt());
     }
