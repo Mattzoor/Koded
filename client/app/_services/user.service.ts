@@ -44,7 +44,6 @@ export class UserService {
         return this.http.put(this.config.apiUrl + '/users/updateRoom/' + student._id, classroom, this.jwt());
     }
     addPendReq(student: User, classroom:Classroom){
-        console.log(student._id + " " + classroom._id);
         return this.http.put(this.config.apiUrl + '/users/addPendReq/' + student._id, classroom, this.jwt());
     }
     removePendReq(student: User, classroom:Classroom){
@@ -53,7 +52,9 @@ export class UserService {
     removeStud(student: User, classroom:Classroom){
         return this.http.put(this.config.apiUrl + '/users/removeRoom/' + student._id, classroom, this.jwt());
     }
-
+    checkRoom(user:User, classroomId:string){
+        return this.http.get(this.config.apiUrl + '/users/check/' + user._id + "/" + classroomId,this.jwt()).map((response: Response) => response.json());
+    }
 
     // private helper methods
     private jwt() {

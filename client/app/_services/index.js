@@ -8,4 +8,5 @@ __export(require("./authentication.service"));
 __export(require("./roomAuth.service"));
 __export(require("./user.service"));
 __export(require("./classroom.service"));
+__export(require("./snippet.service"));
 //# sourceMappingURL=index.js.map
