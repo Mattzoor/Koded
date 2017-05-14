@@ -9,7 +9,7 @@ import { AppConfig } from './app.config';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard, RoomGuard } from './_guards/index';
-import { AlertService, AuthenticationService, RoomAuthService, UserService, ClassroomService, SnippetService } from './_services/index';
+import { AlertService, AuthenticationService, RoomAuthService, UserService, ClassroomService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
@@ -38,8 +38,7 @@ import { RoomComponent } from './room/index';
         AuthenticationService,
         RoomAuthService,
         UserService,
-        ClassroomService,
-        SnippetService
+        ClassroomService
     ],
     bootstrap: [AppComponent]
 })

@@ -1,41 +1,32 @@
 <div class="container">
-    <div class="col-md-6 col-md-offset-3 text-center">
+    <div class="col-md-6 col-md-offset-3">
         <h1>{{currentRoom.roomName}}</h1>
-        <p>{{currentUser.firstName}} {{currentUser.lastName}} </p> 
+        <p>{{currentUser.firstName}} </p> 
     </div>
 
     <!-- Teacher section -->  
     <div *ngIf="currentUser.teacher">
-        <div class="col-md-12 text-center">
-            <button (click)="reloadFields()" class="btn btn-sm btn-info">Reload</button>
-        </div>
         <div class="col-md-6">
             <h3>Students:</h3>
-            <ul>
-                <li *ngFor="let student of students" class="inputSpace">
-                    {{student.firstName}} {{student.lastName}} ({{student.username}})
-                    - <a (click)="removeStudent(student)">Kick</a>
-                </li>
-            </ul>
-            <h3>Pending requests:</h3>
-            <ul>
-                <li *ngFor="let student of pendingReq" class="inputSpace">
-                    {{student.firstName}} {{student.lastName}} ({{student.username}})
-                    - <button (click)="acceptPendingReq(student)" class="btn btn-success btn-sm" >Accept</button>    
-                    - <a (click)="removePendingReq(student)">Decline</a>
-                </li>
-            </ul>
+                <ul>
+                    <li *ngFor="let student of students">
+                        {{student.firstName}} {{student.lastName}} ({{student.username}})
+                        - <a (click)="removeStudent(student)">Kick</a>
+                    </li>
+                </ul>
         </div>
         <div class="col-md-6">
-            <h3>Snippets:</h3>
-            <ul>
-                <li *ngFor="let snip of snippets" class="inputSpace">
-                    {{snip.name}}
-                    - <a (click)="reloadFields()">Send snippet</a>
-                </li>
-            </ul>
+            <h3>Pending requests:</h3>
+                <ul>
+                    <li *ngFor="let student of pendingReq">
+                        {{student.firstName}} {{student.lastName}} ({{student.username}})
+                        - <button (click)="acceptPendingReq(student)" class="btn btn-success btn-sm" >Accept</button>    
+                        - <a (click)="removePendingReq(student)">Decline</a>
+                    </li>
+                </ul>
         </div>
     </div>
+
     <!-- Student section -->
     <div *ngIf="!currentUser.teacher">
         <div class="col-md-6">

@@ -198,6 +198,7 @@ function getByTeacherId(obj) {
 
 function getByStudentId(obj) {
     var deferred = Q.defer();
+    console.log("haha" + obj.studentId);
     db.users.findOne({"studentId": obj.studentId}).toArray( function (err, user) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
         console.log(user.classroomIds)

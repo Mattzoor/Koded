@@ -13,10 +13,9 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
 var RoomComponent = (function () {
-    function RoomComponent(router, classroomService, snippetService, userService, alertService) {
+    function RoomComponent(router, classroomService, userService, alertService) {
         this.router = router;
         this.classroomService = classroomService;
-        this.snippetService = snippetService;
         this.userService = userService;
         this.alertService = alertService;
         this.model = {};
@@ -34,7 +33,6 @@ var RoomComponent = (function () {
     RoomComponent.prototype.reloadFields = function () {
         this.getPendingReq();
         this.getStudents();
-        this.getSnippets();
     };
     RoomComponent.prototype.getUserToReq = function () {
         var _this = this;
@@ -71,33 +69,24 @@ var RoomComponent = (function () {
     RoomComponent.prototype.acceptPendingReq = function (student) {
         var _this = this;
         this.classroomService.acceptPendingReq(student, this.currentRoom).subscribe(function (data) {
-            _this.userService.updateRooms(student, _this.currentRoom).subscribe(function () {
-                _this.reloadFields();
-            });
+            _this.reloadFields();
+            _this.userService.updateRooms(student, _this.currentRoom).subscribe();
         });
     };
     RoomComponent.prototype.removePendingReq = function (student) {
         var _this = this;
-        this.classroomService.removePendingReq(student, this.currentRoom).subscribe(function () {
-            _this.userService.removePendReq(student, _this.currentRoom).subscribe(function () { _this.reloadFields(); });
+        this.classroomService.removePendingReq(student, this.currentRoom).subscribe(function (data) {
+            _this.reloadFields();
+            _this.userService.removePendReq(student, _this.currentRoom).subscribe();
         });
     };
     RoomComponent.prototype.removeStudent = function (student) {
         var _this = this;
-        this.classroomService.removeStud(student, this.currentRoom).subscribe(function () {
-            _this.userService.removeStud(student, _this.currentRoom).subscribe(function () {
-                _this.reloadFields();
-            });
+        this.classroomService.removeStud(student, this.currentRoom).subscribe(function (data) {
+            _this.reloadFields();
+            _this.userService.removeStud(student, _this.currentRoom).subscribe();
         });
     };
-    RoomComponent.prototype.getSnippets = function () {
-        var _this = this;
-        this.snippetService.getSnippetsForTeachId(this.currentUser._id).subscribe(function (snippets) {
-            console.log(snippets);
-            _this.snippets = snippets;
-        });
-    };
-    ;
     return RoomComponent;
 }());
 RoomComponent = __decorate([
@@ -107,7 +96,6 @@ RoomComponent = __decorate([
     }),
     __metadata("design:paramtypes", [router_1.Router,
         index_1.ClassroomService,
-        index_1.SnippetService,
         index_1.UserService,
         index_1.AlertService])
 ], RoomComponent);

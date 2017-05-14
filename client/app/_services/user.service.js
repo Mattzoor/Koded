@@ -45,6 +45,7 @@ var UserService = (function () {
         return this.http.put(this.config.apiUrl + '/users/updateRoom/' + student._id, classroom, this.jwt());
     };
     UserService.prototype.addPendReq = function (student, classroom) {
+        console.log(student._id + " " + classroom._id);
         return this.http.put(this.config.apiUrl + '/users/addPendReq/' + student._id, classroom, this.jwt());
     };
     UserService.prototype.removePendReq = function (student, classroom) {
@@ -52,9 +53,6 @@ var UserService = (function () {
     };
     UserService.prototype.removeStud = function (student, classroom) {
         return this.http.put(this.config.apiUrl + '/users/removeRoom/' + student._id, classroom, this.jwt());
-    };
-    UserService.prototype.checkRoom = function (user, classroomId) {
-        return this.http.get(this.config.apiUrl + '/users/check/' + user._id + "/" + classroomId, this.jwt()).map(function (response) { return response.json(); });
     };
     // private helper methods
     UserService.prototype.jwt = function () {

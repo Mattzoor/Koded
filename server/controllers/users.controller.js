@@ -16,10 +16,8 @@ router.get('/reqs/:_id', getReqs);
 router.put('/exit/:_id', exitClassroom);
 
 router.put('/updateRoom/:_id', updateRoom);
-router.put('/removeRoom/:_id', removeRoom);
 router.put('/addPendReq/:_id', addPendReq);
 router.put('/removePendReq/:_id', removePendReq);
-router.get('/check/:_id/:classroom', checkRoom);
 module.exports = router;
 
 function exitClassroom(req, res){
@@ -148,17 +146,8 @@ function updateRoom(req, res) {
         });
 }
 
-function removeRoom(req, res) {
-    userService.removeRoom(req.params, req.body)
-        .then(function () {
-            res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
 function addPendReq(req,res){
+    console.log(req.params._id + " " + req.body._id);
      userService.addPendReq(req.params, req.body)
         .then(function () {
             res.sendStatus(200);
@@ -172,21 +161,6 @@ function removePendReq(req, res) {
     userService.removePendReq(req.params, req.body)
         .then(function () {
             res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
-function checkRoom(req, res) {
-    userService.checkRoom(req.params._id,req.params.classroom)
-        .then(function (data) {
-            if (data) {
-                //console.log(user);
-                res.send(data);
-            } else {
-                res.sendStatus(404);
-            }
         })
         .catch(function (err) {
             res.status(400).send(err);
