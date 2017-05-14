@@ -9,7 +9,7 @@ import { Classroom, User } from '../_models/index';
 export class ClassroomService {
     constructor(private http: Http, private config: AppConfig) { }
 
-    getAll() {
+    getAll() { 
         return this.http.get(this.config.apiUrl + '/classrooms',this.jwt()).map((response: Response) => response.json());
     }
 
