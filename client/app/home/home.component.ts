@@ -68,7 +68,6 @@ export class HomeComponent implements OnInit {
         {   
             this.userService.checkRoom(this.currentUser,_id).subscribe(
                 (data)=>{
-                    console.log("(data)");
                     this.roomAuthService.enterRoom(_id).subscribe(
                         data => {
                             this.router.navigate(['/classroom']);
@@ -80,7 +79,7 @@ export class HomeComponent implements OnInit {
                 },
                 error=>{
                     console.log("error");
-                    this.alertService.error("Not memeber of room"); 
+                    this.alertService.error("Not member of room"); 
                     this.loading = false;
                 });
         }

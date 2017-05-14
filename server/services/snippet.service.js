@@ -16,6 +16,7 @@ service.update = update;
 service.delete = _delete;
 service.getSnippets = getSnippets;
 service.updateSnippet = updateSnippet;
+service.saveSnippet = saveSnippet;
 module.exports = service;
 
 
@@ -158,6 +159,41 @@ function updateSnippet(_id, snippetParam) {
     });
 
     function updatesnippet() {
+        // fields to update
+        var set = {
+            name: snippetParam.name,
+            teacherId: snippetParam.teacherId,
+            code: snippetParam.code,
+            feedback: snippetParam.feedback
+        };
+
+        db.snippets.update(
+            { _id: mongo.helper.toObjectID(_id) },
+            { $set: set },
+            function (err, doc) {
+                if (err) deferred.reject(err.name + ': ' + err.message);
+
+                deferred.resolve();
+            });
+    }
+
+    return deferred.promise;
+}
+
+
+function saveSnippet(_id, snippetParam) {
+    var deferred = Q.defer();
+    console.log(_id +'      ' + snippetParam);
+    // validation
+    db.snippets.findById(_id, function (err, snippet) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+
+        if(snippet){
+            savesnippet();
+        }
+    });
+
+    function savesnippet() {
         // fields to update
         var set = {
             name: snippetParam.name,

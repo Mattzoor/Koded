@@ -41,6 +41,9 @@ var SnippetService = (function () {
     SnippetService.prototype.updateSnippet = function (snippet) {
         return this.http.put(this.config.apiUrl + '/snippets/updateSnippet/' + snippet._id, snippet, this.jwt());
     };
+    SnippetService.prototype.saveSnippet = function (snippet) {
+        return this.http.put(this.config.apiUrl + '/snippets/saveSnippet/' + snippet._id, snippet, this.jwt());
+    };
     // private helper methods
     SnippetService.prototype.jwt = function () {
         // create authorization header with jwt token

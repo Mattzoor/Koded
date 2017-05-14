@@ -60,7 +60,6 @@ var HomeComponent = (function () {
         }
         else {
             this.userService.checkRoom(this.currentUser, _id).subscribe(function (data) {
-                console.log("(data)");
                 _this.roomAuthService.enterRoom(_id).subscribe(function (data) {
                     _this.router.navigate(['/classroom']);
                 }, function (error) {
@@ -69,7 +68,7 @@ var HomeComponent = (function () {
                 _this.loading = false;
             }, function (error) {
                 console.log("error");
-                _this.alertService.error("Not memeber of room");
+                _this.alertService.error("Not member of room");
                 _this.loading = false;
             });
         }

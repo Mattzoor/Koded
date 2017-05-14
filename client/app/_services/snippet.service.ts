@@ -40,6 +40,10 @@ export class SnippetService {
     updateSnippet(snippet: Snippet) {
         return this.http.put(this.config.apiUrl + '/snippets/updateSnippet/' + snippet._id, snippet,this.jwt());
     }
+
+    saveSnippet(snippet:Snippet){
+        return this.http.put(this.config.apiUrl + '/snippets/saveSnippet/' + snippet._id, snippet,this.jwt());
+    }
     // private helper methods
     private jwt() {
         // create authorization header with jwt token

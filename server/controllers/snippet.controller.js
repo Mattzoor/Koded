@@ -13,6 +13,7 @@ router.get('/:_id', getById);
 router.get('/name/:name', getByName);
 router.get('/getSnippets/:_id', getSnippets);
 router.put('/updateSnippet/:_id', updateSnippet);
+router.put('/saveSnippet/:_id', saveSnippet);
 
 module.exports = router;
 
@@ -116,6 +117,16 @@ function getSnippets(req, res) {
 
 function updateSnippet(req, res) {
     snippetService.updateSnippet(req.params._id, req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function saveSnippet(req, res) {
+    snippetService.saveSnippet(req.params._id, req.body)
         .then(function () {
             res.sendStatus(200);
         })

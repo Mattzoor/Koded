@@ -25,3 +25,41 @@
 .inputMoreSpace{
     margin: 50px 0px 0px 0px;
 }
+
+.userLabel{
+    font-weight:bold;
+    color:#26A69A;
+    margin-right:10px
+}
+
+.chatContainer{
+    height:85%;
+    padding:15px;
+    overflow-y:auto 
+}
+
+.snippetBorder{
+    display:inline-block;
+    margin-left:5px;
+    width: 110%;
+    height: 150%;
+    border:2px solid black;
+}
+
+.snippetBorder2{
+    border-bottom:2px solid black;
+    width: 110%;
+    height: 150%;
+}
+
+#snippet {
+    display: none;
+}
+
+#sippet:hover{
+    display: none;
+}
+.snip:hover #snippet {
+    display:block;
+}
+}

@@ -1,0 +1,43 @@
+﻿a {
+    cursor: pointer;
+}
+
+.help-block {
+    font-size: 12px;
+}
+
+#users_name_h1{
+    font-size: 33px;
+}
+
+.logoutDiv{
+    vertical-align: middle;
+}
+
+#list_p{
+    font-size: 16px;
+}
+
+.inputSpace{
+    margin: 0px 0px 5px 0px;
+}
+
+.inputMoreSpace{
+    margin: 50px 0px 0px 0px;
+}
+
+.userLabel{
+    font-weight:bold;
+    color:#26A69A;
+    margin-right:10px
+}
+
+.chatContainer{
+    height:85%;
+    padding:15px;
+    overflow-y:auto 
+}
+
+.listp{
+    font-size: 12px;
+}

@@ -5,6 +5,8 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
 var config = require('config.json');
+var socketServer = require('./socket');
+socketServer.start();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
