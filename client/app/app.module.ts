@@ -14,7 +14,6 @@ import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { RoomComponent } from './room/index';
-import { SnippetComponent } from './snippetComp/index';
 
 @NgModule({
     imports: [
@@ -29,8 +28,7 @@ import { SnippetComponent } from './snippetComp/index';
         HomeComponent,
         LoginComponent,
         RegisterComponent,
-        RoomComponent,
-        SnippetComponent
+        RoomComponent
     ],
     providers: [
         AppConfig,

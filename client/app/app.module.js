@@ -20,7 +20,6 @@ var index_4 = require("./home/index");
 var index_5 = require("./login/index");
 var index_6 = require("./register/index");
 var index_7 = require("./room/index");
-var index_8 = require("./snippetComp/index");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -40,8 +39,7 @@ AppModule = __decorate([
             index_4.HomeComponent,
             index_5.LoginComponent,
             index_6.RegisterComponent,
-            index_7.RoomComponent,
-            index_8.SnippetComponent
+            index_7.RoomComponent
         ],
         providers: [
             app_config_1.AppConfig,

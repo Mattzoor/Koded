@@ -67,7 +67,6 @@ var HomeComponent = (function () {
                 });
                 _this.loading = false;
             }, function (error) {
-                console.log("error");
                 _this.alertService.error("Not member of room");
                 _this.loading = false;
             });
@@ -187,6 +186,7 @@ var HomeComponent = (function () {
         var _this = this;
         this.currentSnippet.name = this.snippetModel.name;
         this.currentSnippet.code = this.snippetModel.code;
+        this.currentSnippet.desc = this.snippetModel.desc;
         this.loading = true;
         this.snippetService.updateSnippet(this.currentSnippet).subscribe(function (data) {
             _this.alertService.success('Update successful', true);
@@ -226,6 +226,7 @@ var HomeComponent = (function () {
         this.editing = true;
         this.snippetModel.name = snippet.name;
         this.snippetModel.code = snippet.code;
+        this.snippetModel.desc = snippet.desc;
         this.currentSnippet = snippet;
     };
     HomeComponent.prototype.returnFunc = function () {
@@ -234,20 +235,9 @@ var HomeComponent = (function () {
         this.editing = false;
         this.snippetModel.name = "";
         this.snippetModel.code = "";
+        this.snippetModel.desc = "";
     };
     HomeComponent.prototype.onKey = function (e) {
-        // // get caret position/selection
-        // var start = e.selectionStart;
-        // var end = e.selectionEnd;
-        // var target = e.target;
-        // var value = target.value;
-        // // set textarea value to: text before caret + tab + text after caret
-        // target.value = value.substring(0, start)
-        //             + "\t"
-        //             + value.substring(end);
-        // // put caret at right position again (add one for the tab)
-        // e.electionStart = e.selectionEnd = start + 1;
-        // prevent the focus lose
         e.preventDefault();
     };
     return HomeComponent;

@@ -56,10 +56,16 @@
     display: none;
 }
 
-#sippet:hover{
+#snippet:hover{
     display: none;
 }
 .snip:hover #snippet {
-    display:block;
+    display:none;
 }
+
+.studentMade{
+    color: orangered;
+}
+.basicCode{
+    color:black;
 }

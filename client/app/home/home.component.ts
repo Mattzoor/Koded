@@ -78,7 +78,6 @@ export class HomeComponent implements OnInit {
                     this.loading = false;
                 },
                 error=>{
-                    console.log("error");
                     this.alertService.error("Not member of room"); 
                     this.loading = false;
                 });
@@ -203,6 +202,7 @@ export class HomeComponent implements OnInit {
     updateSnippet(){
         this.currentSnippet.name = this.snippetModel.name;
         this.currentSnippet.code = this.snippetModel.code;
+        this.currentSnippet.desc = this.snippetModel.desc;
         this.loading = true;
         this.snippetService.updateSnippet(this.currentSnippet).subscribe(
                 data => {
@@ -247,6 +247,7 @@ export class HomeComponent implements OnInit {
         this.editing= true;
         this.snippetModel.name = snippet.name;
         this.snippetModel.code = snippet.code;
+        this.snippetModel.desc = snippet.desc;
         this.currentSnippet = snippet;
     }
     returnFunc(){
@@ -255,25 +256,10 @@ export class HomeComponent implements OnInit {
         this.editing = false;
         this.snippetModel.name = "";
         this.snippetModel.code = "";
+        this.snippetModel.desc = "";
     }
 
      onKey(e:any){
-        // // get caret position/selection
-        // var start = e.selectionStart;
-        // var end = e.selectionEnd;
-
-        // var target = e.target;
-        // var value = target.value;
-
-        // // set textarea value to: text before caret + tab + text after caret
-        // target.value = value.substring(0, start)
-        //             + "\t"
-        //             + value.substring(end);
-
-        // // put caret at right position again (add one for the tab)
-        // e.electionStart = e.selectionEnd = start + 1;
-
-        // prevent the focus lose
         e.preventDefault();
     }
 }
