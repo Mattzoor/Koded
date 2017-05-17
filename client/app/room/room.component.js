@@ -26,6 +26,7 @@ var RoomComponent = (function () {
         this.loading = false;
         this.activeSnippet = false;
         this.checkingFeedback = false;
+        this.show = false;
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
         this.socket = this.socket = io(this.config.snipUrl);
@@ -117,6 +118,7 @@ var RoomComponent = (function () {
     RoomComponent.prototype.getSnippets = function () {
         var _this = this;
         this.snippetService.getSnippetsForTeachId(this.currentUser._id).subscribe(function (snippets) {
+            console.log(snippets);
             _this.snippets = snippets;
             _this.snippets.forEach(function (snip) {
                 if (snip.feedback == undefined) {
@@ -136,6 +138,7 @@ var RoomComponent = (function () {
         this.snippetUsers = this.connectedUsers;
         this.connectedUsers = new Array();
         this.snippet = snippet;
+        this.data.snippet = snippet;
         this.activeSnippet = true;
         this.socket.emit('snippet', {
             'classroom': this.currentRoom._id,
@@ -145,35 +148,12 @@ var RoomComponent = (function () {
             'isTeacher': this.currentUser.teacher,
             'snipname': snippet.name,
             'code': snippet.code,
-            'desc': snippet.desc,
             'command': "sendSnip"
         });
     };
-    RoomComponent.prototype.responseSnippet = function (myForm) {
-        var stringfid = JSON.stringify(myForm.form.value.inputs).split('... .- - .- -.'); //the key to life itself
-        stringfid[0] = stringfid[0].substring(1, stringfid[0].length - 1);
-        stringfid[stringfid.length - 1] = stringfid[stringfid.length - 1].substring(1, stringfid[stringfid.length - 1].length - 1);
-        var input = new Array();
-        for (var i = 0; i < stringfid.length; i++) {
-            if (stringfid[i].substring(0, 3) == '":"') {
-                input.push(stringfid[i].substring(3, stringfid[i].length - 3));
-            }
-            if (stringfid[i].substring(0, 2) == ':"') {
-                input.push(stringfid[i].substring(2, stringfid[i].length - 1));
-            }
-        }
-        var resCode = "";
-        for (var i = 0; i < this.snippetStrings.length; i++) {
-            if (this.snippetStrings[i] != ' ') {
-                resCode += this.snippetStrings[i];
-            }
-            if (i < input.length) {
-                resCode += "<filled>";
-                resCode += input[i];
-                resCode += "<filled>";
-            }
-        }
+    RoomComponent.prototype.responseSnippet = function () {
         this.activeSnippet = false;
+        this.responseSnip.code = this.snippet.code;
         this.socket.emit('snippet', {
             'classroom': this.currentRoom._id,
             'username': this.currentUser.username,
@@ -181,7 +161,7 @@ var RoomComponent = (function () {
             'lastName': this.currentUser.lastName,
             'isTeacher': this.currentUser.teacher,
             'snipname': this.snippet.name,
-            'code': resCode,
+            'code': this.responseSnip.code,
             'command': "responseSnip"
         });
         this.snippet = new index_1.Snippet();
@@ -210,23 +190,18 @@ var RoomComponent = (function () {
             'command': 'connected'
         });
         this.socket.on('roomUpdate', function (data) {
+            console.log(data.command);
             if (data.classroom == this.currentRoom._id) {
                 if (data.command == 'connected') {
                     var user = new index_1.User();
                     user.username = data.username;
                     user.firstName = data.firstName;
                     user.lastName = data.lastName;
-                    var check = false;
-                    this.connectedUsers.forEach(function (user) {
-                        if (user.username == data.username) {
-                            check = true;
-                        }
-                    });
-                    if (!check) {
-                        this.connectedUsers.push(user);
-                    }
+                    console.log(user);
+                    this.connectedUsers.push(user);
                 }
                 if (data.command == 'checkUsers') {
+                    console.log(data.classroom + '+' + this.currentRoom._id);
                     if (data.classroom == this.currentRoom._id) {
                         this.socket.emit('newConnected', {
                             'classroom': this.currentRoom._id,
@@ -253,7 +228,6 @@ var RoomComponent = (function () {
             }
         }.bind(this));
         this.socket.on('snipUpdate', function (data) {
-            var _this = this;
             if (data.classroom == this.currentRoom._id) {
                 if (data.command == 'newSnip') {
                 }
@@ -263,21 +237,8 @@ var RoomComponent = (function () {
                             if (this.snippet.name != data.snipname) {
                                 this.snippet.name = data.snipname;
                                 this.snippet.code = data.code;
-                                this.snippet.desc = data.desc;
                                 this.activeSnippet = true;
                                 this.reset = data.code;
-                                this.snippetStrings = new Array();
-                                var tmp = this.snippet.code.split('<fill>');
-                                tmp.forEach(function (s) {
-                                    _this.snippetStrings.push(s);
-                                });
-                                if (this.snippet.code.substring(0, 6) == '<fill>') {
-                                    this.snippetStrings[0] = ' ';
-                                }
-                                this.input = new Array();
-                                for (var i = 0; i < this.snippetStrings.length; i++) {
-                                    this.input.push({ name: 'input' + i, type: 'text', value: '' });
-                                }
                             }
                         }
                     }
@@ -289,9 +250,10 @@ var RoomComponent = (function () {
                         }
                         this.snippet.feedback.push('Classroom: ' + data.classroom + '\n' +
                             'Date: ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() + '\n' +
-                            'Student:' + data.username + ', ' + data.firstName + ' ' + data.lastName + '\n' +
+                            'Student:' + data.username + ' ' + data.firstName + ' ' + data.lastName + '\n' +
                             'code:\n' +
                             data.code);
+                        console.log(this.snippet.feedback);
                         for (var i = 0; i < this.snippetUsers.length; i++) {
                             if (this.snippetUsers[i].username == data.username) {
                                 this.snippetUsers.splice(i, 1);
@@ -309,6 +271,7 @@ var RoomComponent = (function () {
                                 }
                             }
                         }
+                        console.log(this.snippetUsers);
                         if (this.snippetUsers.length == 0) {
                             this.activeSnippet = false;
                             this.saveSnippet();
@@ -319,26 +282,36 @@ var RoomComponent = (function () {
         }.bind(this));
     };
     RoomComponent.prototype.checkFeedback = function (snippet) {
-        var _this = this;
-        this.feedbackArray = new Array(Array());
+        this.feedbackList = new Array();
         snippet.feedback.forEach(function (feed) {
-            var classroom = new Array();
-            classroom = feed.split('Date:');
-            if (classroom[0].substring(11, classroom[0].length - 1) == _this.currentRoom._id) {
-                var tmp = feed.split(_this.currentRoom._id + '\n');
-                var tmp2 = new Array();
-                tmp2 = tmp[1].split("<filled>");
-                _this.feedbackArray.push(tmp2);
-            }
+            feed.split('\n');
+            console.log(feed);
         });
-        this.feedbackList = snippet.feedback;
         this.checkingFeedback = true;
     };
     RoomComponent.prototype.doneCheckingFeedback = function () {
         this.feedbackList = new Array();
         this.checkingFeedback = false;
     };
+    RoomComponent.prototype.showSnip = function () {
+        this.show = true;
+    };
+    RoomComponent.prototype.hideSnip = function () {
+        this.show = false;
+    };
     RoomComponent.prototype.onKey = function (e) {
+        // // get caret position/selection
+        // var start = e.selectionStart;
+        // var end = e.selectionEnd;
+        // var target = e.target;
+        // var value = target.value;
+        // // set textarea value to: text before caret + tab + text after caret
+        // target.value = value.substring(0, start)
+        //             + "\t"
+        //             + value.substring(end);
+        // // put caret at right position again (add one for the tab)
+        // e.electionStart = e.selectionEnd = start + 1;
+        // prevent the focus lose
         e.preventDefault();
     };
     return RoomComponent;

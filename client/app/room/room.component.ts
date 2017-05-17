@@ -1,10 +1,10 @@
-import { Component, OnInit,NgModule, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConfig } from '../app.config';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { User, Classroom, Snippet, Feedback} from '../_models/index';
 import { AlertService, UserService, ClassroomService, SnippetService } from '../_services/index';
+import { SnippetComponent } from '../snippetComp/index';
 
 @Component({
     moduleId: module.id,
@@ -26,12 +26,11 @@ export class RoomComponent implements OnInit {
     snippetUsers: User[];
     activeSnippet = false;
     reset:string;
-    feedbackList: string[];
+    feedbackList: Feedback[];
     checkingFeedback = false;
     currentFeedback: Feedback;
-    snippetStrings:string[];
-    input: any[];
-    feedbackArray: any[][];
+    show = false;
+
 
     constructor(
         private router: Router,
@@ -146,6 +145,7 @@ export class RoomComponent implements OnInit {
     //Snippet handling    
     getSnippets(){
         this.snippetService.getSnippetsForTeachId(this.currentUser._id).subscribe((snippets) => {
+            console.log(snippets);
             this.snippets = snippets;
             this.snippets.forEach(snip => {
                 if(snip.feedback == undefined){
@@ -160,11 +160,11 @@ export class RoomComponent implements OnInit {
             this.getSnippets();
         });
     }
-
     sendSnippet(snippet: Snippet){
         this.snippetUsers = this.connectedUsers;
         this.connectedUsers = new Array();
         this.snippet = snippet;
+        this.data.snippet = snippet;
         this.activeSnippet = true;
         this.socket.emit('snippet',{
             'classroom': this.currentRoom._id,
@@ -174,37 +174,13 @@ export class RoomComponent implements OnInit {
             'isTeacher' : this.currentUser.teacher,
 			'snipname': snippet.name,
 			'code': snippet.code,
-            'desc': snippet.desc,
 			'command': "sendSnip"
         });
     }
 
-    responseSnippet(myForm:any){
-        var stringfid = JSON.stringify(myForm.form.value.inputs).split('... .- - .- -.'); //the key to life itself
-        stringfid[0] = stringfid[0].substring(1,stringfid[0].length-1);
-        stringfid[stringfid.length-1] = stringfid[stringfid.length-1].substring(1,stringfid[stringfid.length-1].length-1);
-        var input = new Array();
-        for(var i = 0; i < stringfid.length;i++){
-            if(stringfid[i].substring(0,3)=='":"'){
-                input.push(stringfid[i].substring(3,stringfid[i].length-3));
-            }
-            if(stringfid[i].substring(0,2)== ':"'){
-                input.push(stringfid[i].substring(2,stringfid[i].length-1));
-            }
-        }
-        var resCode = "";
-        for(var i = 0; i < this.snippetStrings.length; i++){
-            if(this.snippetStrings[i] != ' '){
-                resCode += this.snippetStrings[i];
-            }
-            if(i < input.length){
-                resCode += "<filled>";
-                resCode += input[i];
-                resCode += "<filled>";
-            }                
-        }
-
+    responseSnippet(){
         this.activeSnippet = false;
+        this.responseSnip.code = this.snippet.code;
         this.socket.emit('snippet',{
             'classroom': this.currentRoom._id,
             'username': this.currentUser.username,
@@ -212,7 +188,7 @@ export class RoomComponent implements OnInit {
             'lastName': this.currentUser.lastName,
             'isTeacher' : this.currentUser.teacher,
 			'snipname': this.snippet.name,
-			'code': resCode,
+			'code': this.responseSnip.code,
 			'command': "responseSnip"
         });
         this.snippet = new Snippet();
@@ -244,23 +220,18 @@ export class RoomComponent implements OnInit {
             'command':'connected'
         });
         this.socket.on('roomUpdate', function(data:any) {
+            console.log(data.command);
             if(data.classroom == this.currentRoom._id){
                 if(data.command == 'connected'){
                     var user = new User();
                     user.username = data.username;
                     user.firstName = data.firstName;
                     user.lastName = data.lastName;
-                    var check = false;
-                    this.connectedUsers.forEach((user:User) =>{
-                        if(user.username==data.username){
-                            check = true;
-                        }
-                    });
-                    if(!check){
-                        this.connectedUsers.push(user);
-                    }
+                    console.log(user);
+                    this.connectedUsers.push(user);
                 }
                 if(data.command == 'checkUsers'){
+                    console.log(data.classroom + '+' + this.currentRoom._id);
                     if(data.classroom == this.currentRoom._id){
                         this.socket.emit('newConnected', {
                             'classroom': this.currentRoom._id,
@@ -298,22 +269,8 @@ export class RoomComponent implements OnInit {
                             if(this.snippet.name != data.snipname){
                                 this.snippet.name = data.snipname;
                                 this.snippet.code = data.code;
-                                this.snippet.desc = data.desc;
                                 this.activeSnippet = true;
-                                this.reset = data.code; 
-                                this.snippetStrings = new Array();
-                                
-                                var tmp = this.snippet.code.split('<fill>');
-                                tmp.forEach((s:string) => {
-                                    this.snippetStrings.push(s);
-                                });
-                                if(this.snippet.code.substring(0,6)== '<fill>'){
-                                    this.snippetStrings[0]=' ';
-                                }
-                                this.input = new Array();
-                                for(var i = 0; i < this.snippetStrings.length; i++){
-                                    this.input.push({ name:'input'+i, type: 'text', value: ''});
-                                }
+                                this.reset = data.code;
                             }
                         }
                     }
@@ -327,11 +284,11 @@ export class RoomComponent implements OnInit {
                         this.snippet.feedback.push(
                             'Classroom: ' + data.classroom +'\n'+ 
                             'Date: ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() +'\n'+
-                            'Student:' + data.username + ', ' + data.firstName + ' ' + data.lastName + '\n' + 
+                            'Student:' + data.username + ' ' + data.firstName + ' ' + data.lastName + '\n' + 
                             'code:\n' +
                             data.code 
                         );
-                        
+                        console.log(this.snippet.feedback);
                         for(var i = 0; i < this.snippetUsers.length; i++) {
                             if(this.snippetUsers[i].username == data.username) {
                                 this.snippetUsers.splice(i, 1);
@@ -348,7 +305,7 @@ export class RoomComponent implements OnInit {
                                 }
                             }    
                         }
-                        
+                        console.log(this.snippetUsers);
                         if(this.snippetUsers.length == 0){
                                 this.activeSnippet = false;
                                 this.saveSnippet();
@@ -361,18 +318,10 @@ export class RoomComponent implements OnInit {
 
     checkFeedback(snippet:Snippet){
 
-        this.feedbackArray = new Array(Array());
-        snippet.feedback.forEach(feed=>{
-            var classroom= new Array();
-            classroom= feed.split('Date:');
-            if(classroom[0].substring(11,classroom[0].length-1)==this.currentRoom._id){
-                var tmp = feed.split(this.currentRoom._id+'\n');  
-                var tmp2 = new Array();  
-                tmp2 = tmp[1].split("<filled>");
-                this.feedbackArray.push(tmp2);
-            }
+        this.feedbackList = new Array();
+        snippet.feedback.forEach(feed => {
+            feed.split('\n');console.log(feed);
         });
-        this.feedbackList = snippet.feedback;
         this.checkingFeedback = true;
     }
     doneCheckingFeedback(){
@@ -380,7 +329,29 @@ export class RoomComponent implements OnInit {
         this.checkingFeedback = false;
     }
 
+    showSnip(){
+        this.show=true;
+    }
+    hideSnip(){
+        this.show =false;
+    }
     onKey(e:any){
+        // // get caret position/selection
+        // var start = e.selectionStart;
+        // var end = e.selectionEnd;
+
+        // var target = e.target;
+        // var value = target.value;
+
+        // // set textarea value to: text before caret + tab + text after caret
+        // target.value = value.substring(0, start)
+        //             + "\t"
+        //             + value.substring(end);
+
+        // // put caret at right position again (add one for the tab)
+        // e.electionStart = e.selectionEnd = start + 1;
+
+        // prevent the focus lose
         e.preventDefault();
     }
 

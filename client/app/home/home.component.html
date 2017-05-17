@@ -37,9 +37,7 @@
             <div class="inputSpace" *ngIf="create">
                 <h3>Create Snippet</h3>
                 <input type="text" class="form-control inputSpace" name="snippetName" [(ngModel)]="snippetModel.name" #name="ngModel" placeholder="Snippet name..." required/>
-                <h6 class="inputSpace">Put &lt;fill&gt; where the student should fill!</h6>
                 <textarea ng-model="string" class="form-control inputSpace" rows="7" cols="50" name="snippetBox" [(ngModel)]="snippetModel.code" #code="ngModel" id="snippetBox" (keydown.Tab)="onKey($event)" placeholder="Code here..." required></textarea>
-                <textarea ng-model="string" class="form-control inputSpace" rows="3" name="descBox" [(ngModel)]="snippetModel.desc" #desc="ngModel" id="snippetdesc" (keydown.Tab)="onKey($event)" placeholder="Desc here..." required></textarea>                
                 <button [disabled]="loading" class="btn btn-success btn-sm" (click)="createSnippet()">Create</button>
                 - <a (click)="returnFunc()">Return</a>
             </div>  
@@ -56,9 +54,7 @@
                 <div *ngIf="editing">    
                     <h3>Edit Snippet</h3>
                     <input type="text" class="form-control inputSpace" name="snippetName" [(ngModel)]="snippetModel.name" #name="ngModel" placeholder="Snippet name..." required/>
-                    <h6 class="inputSpace">Put &lt;fill&gt; where the student should fill!</h6>
                     <textarea ng-model="string" class="form-control inputSpace" rows="7" cols="50" name="snippetBox" [(ngModel)]="snippetModel.code" #code="ngModel" id="snippetBox" (keydown.Tab)="onKey($event)" placeholder="Code here..." required></textarea>
-                    <textarea ng-model="string" class="form-control inputSpace" rows="3" name="descBox" [(ngModel)]="snippetModel.desc" #desc="ngModel" id="snippetdesc" (keydown.Tab)="onKey($event)" placeholder="Desc here..." required></textarea>                
                     <button [disabled]="loading" class="btn btn-success btn-sm" (click)="updateSnippet()">Update</button>
                 - <a (click)="returnFunc()">Return</a>
                 </div>
