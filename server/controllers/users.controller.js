@@ -23,7 +23,6 @@ router.get('/check/:_id/:classroom', checkRoom);
 module.exports = router;
 
 function exitClassroom(req, res){
-    console.log("controller:    " + req.params._id + "    " + req.body._id);
     userService.exitClassroom(req.params._id, req.body._id)
         .then(function () {
             res.sendStatus(200);
@@ -107,7 +106,6 @@ function getById(req, res) {
     userService.getById(req.params._id)
         .then(function (user) {
             if (user) {
-                //console.log(user);
                 res.send(user);
             } else {
                 res.sendStatus(404);
@@ -182,7 +180,6 @@ function checkRoom(req, res) {
     userService.checkRoom(req.params._id,req.params.classroom)
         .then(function (data) {
             if (data) {
-                //console.log(user);
                 res.send(data);
             } else {
                 res.sendStatus(404);

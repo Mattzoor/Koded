@@ -21,7 +21,6 @@ function getById(req, res) {
     snippetService.getById(req.params._id)
         .then(function (snippet) {
             if (snippet) {
-                //console.log(user);
                 res.send(snippet);
             } else {
                 res.sendStatus(404);

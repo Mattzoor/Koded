@@ -3,5 +3,6 @@ export class Snippet {
     name: string;
     teacherId: string;
     code:string;
+    desc:string;
     feedback: string[];
 } 

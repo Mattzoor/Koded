@@ -76,7 +76,6 @@ function create(snippetParam) {
 
 function update(_id, snippetParam) {
     var deferred = Q.defer();
-    console.log(_id +'      ' + snippetParam);
     // validation
     db.snippets.findById(_id, function (err, snippet) {
         if (err) deferred.reject(err.name + ': ' + err.message);
@@ -105,7 +104,9 @@ function update(_id, snippetParam) {
         var set = {
             name: snippetParam.name,
             teacherId: snippetParam.teacherId,
-            students: snippetParam.students,
+            code: snippetParam.code,
+            desc: snippetParam.desc,
+            feedback: snippetParam.feedback
         };
 
         db.snippets.update(
@@ -148,7 +149,6 @@ function getSnippets(obj) {
 
 function updateSnippet(_id, snippetParam) {
     var deferred = Q.defer();
-    console.log(_id +'      ' + snippetParam);
     // validation
     db.snippets.findById(_id, function (err, snippet) {
         if (err) deferred.reject(err.name + ': ' + err.message);
@@ -164,6 +164,7 @@ function updateSnippet(_id, snippetParam) {
             name: snippetParam.name,
             teacherId: snippetParam.teacherId,
             code: snippetParam.code,
+            desc: snippetParam.desc,
             feedback: snippetParam.feedback
         };
 
@@ -183,7 +184,6 @@ function updateSnippet(_id, snippetParam) {
 
 function saveSnippet(_id, snippetParam) {
     var deferred = Q.defer();
-    console.log(_id +'      ' + snippetParam);
     // validation
     db.snippets.findById(_id, function (err, snippet) {
         if (err) deferred.reject(err.name + ': ' + err.message);
@@ -199,6 +199,7 @@ function saveSnippet(_id, snippetParam) {
             name: snippetParam.name,
             teacherId: snippetParam.teacherId,
             code: snippetParam.code,
+            desc: snippetParam.desc,
             feedback: snippetParam.feedback
         };
 

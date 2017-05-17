@@ -127,7 +127,6 @@ function create(classroomParam) {
 
 function update(_id, classroomParam) {
     var deferred = Q.defer();
-    console.log(_id +'      ' + classroomParam);
     // validation
     db.classrooms.findById(_id, function (err, classroom) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
@@ -200,11 +199,7 @@ function getByStudentId(obj) {
     var deferred = Q.defer();
     db.users.findOne({"studentId": obj.studentId}).toArray( function (err, user) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
-        console.log(user.classroomIds)
-        if(user.classroomIds != null){
-            console.log(user.classroomIds)
-        }
-
+        
         if(user){
             deferred.resolve(user);
         } else {
@@ -262,14 +257,12 @@ function sendReq(roomName, studentParam){
 }
 
 function getReq(classroom){
-    console.log(classroom._id);
     
     var deferred = Q.defer();
     db.classrooms.findOne({_id: mongo.helper.toObjectID(classroom._id)}, function (err, classroom) {
         if (err) deferred.reject(err.roomName + ': ' + err.message);
 
         if (classroom) {
-            console.log(classroom.pendingReq);
             deferred.resolve(classroom.pendingReq);
         }
     });
